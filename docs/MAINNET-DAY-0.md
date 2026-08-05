@@ -101,7 +101,6 @@ Private DeFi routes through shared anonymizer contracts into public venues, so a
 
 ## Where to go next
 
-- [Starter kit](https://github.com/starkware-libs/starknet-privacy-starter-kit) — working demo, Sepolia-wired, the fastest way to see the flow end to end
 - [Privacy SDK](https://github.com/starkware-libs/starknet-privacy) — the monorepo
 - [STRK20 by example](https://strk20-by-example.org/what-is-strk20) — the pool, the wallet API, anonymizer contracts
 - [Integration routes](https://strk20.starknet.io/build) — private dapp vs privacy wallet vs your own prover

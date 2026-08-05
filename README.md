@@ -99,8 +99,9 @@ Winners announced **September 4**.
 
 - **[Day 0: your first mainnet transaction](docs/MAINNET-DAY-0.md)** — start here. Zero to a shielded mainnet balance.
 - **[Ideas](IDEAS.md)** — inspiration, not bounties.
-- **[Starter kit](https://github.com/starkware-libs/starknet-privacy-starter-kit)** — clone-and-go template with a working demo wired to the pool.
-- **[Privacy SDK](https://github.com/starkware-libs/starknet-privacy)** — the monorepo.
+- **[Privacy SDK](https://github.com/starkware-libs/starknet-privacy)** — the monorepo. Start here.
+<!-- TODO: re-add the starter kit link once the repo is public. It currently lives at
+     Akashneelesh/starknet-privacy-starter-kit and returns 404 to anyone outside. -->
 - **[STRK20 by example](https://strk20-by-example.org/what-is-strk20)** — documentation.
 - **[Build on STRK20](https://strk20.starknet.io/build)** — pick your integration route.
 
