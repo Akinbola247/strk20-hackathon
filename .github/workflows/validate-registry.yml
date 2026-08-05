@@ -1,0 +1,29 @@
+name: Validate registry
+
+# Registration is a pull request against registry.json, so this check is what
+# stands between a contributor and being merged. Green means a maintainer can
+# merge without reading the JSON.
+on:
+  pull_request:
+    paths:
+      - registry.json
+      - scripts/validate-registry.mjs
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check registry.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/validate-registry.mjs

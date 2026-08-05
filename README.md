@@ -12,8 +12,10 @@ Everyone builds in the open. You work in your own public repository, and every p
 
 1. **Fork this repository.**
 2. **Add your project to [`registry.json`](registry.json)** — one object, appended to the array. See the schema below.
-3. **Open a pull request.** Once it's merged you're registered, and your module appears on the hub within 30 minutes.
+3. **Open a pull request.** A check validates your entry automatically and comments if anything is off — slug already taken, repository not public, a field in the wrong shape. Once it's green and merged you're registered, and your project appears on the hub within 30 minutes.
 4. **Join the Telegram group** — the link is in the merged PR comment, and the STRK20 team is in there every day of the sprint.
+
+**Start building before your PR is merged.** Registration is a formality, not a gate — nothing about it unlocks the stack, and review is usually same-day. Open the PR, then go write code. Merging it only decides when your project appears on the hub.
 
 Registration stays open for the whole sprint. Registering on day 12 is fine; you just have less time.
 
