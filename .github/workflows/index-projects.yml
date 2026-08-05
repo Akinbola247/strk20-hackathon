@@ -1,0 +1,54 @@
+name: Index projects
+
+# projects.json is what the hub at strk20.starknet.io/hackathon fetches. It is
+# rebuilt on a 30-minute cron so activity stays fresh during the sprint, and on
+# every push to main so a merged registration PR appears within a minute.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - registry.json
+      - scripts/build-projects.mjs
+      - .github/workflows/index-projects.yml
+  workflow_dispatch:
+
+# The job commits projects.json back to main.
+permissions:
+  contents: write
+
+# A cron tick landing on top of a merge would race for the same commit.
+concurrency:
+  group: index-projects
+  cancel-in-progress: false
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build projects.json
+        env:
+          # Repo-scoped token: 1,000 requests/hour, against roughly 120 per run.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/build-projects.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "strk20-sprint-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects.json
+          # No push activity since the last tick is the common case — exit quietly
+          # rather than creating an empty commit every 30 minutes.
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "chore: reindex projects [skip ci]"
+          git push
