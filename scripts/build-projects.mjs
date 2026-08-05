@@ -124,7 +124,6 @@ const TEXT_SIGNALS = [
   [/sub-?accounts?/i, "Sub-accounts", true],
   [/wallet\s?api|starknet_wallet|walletApi/i, "Wallet API", true],
   [/discoverNotes|IndexerDiscoveryProvider|note discovery/i, "Note discovery", true],
-  [/viewing\s?key/i, "Viewing keys", true],
   [/proving\s?service|PROVING_SERVICE|proverUrl/i, "Prover", true],
   [/shielded|unshield/i, "Shielded balances", true],
   [/snforge|starknet-foundry/i, "Starknet Foundry", false],
