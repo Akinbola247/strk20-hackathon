@@ -94,24 +94,47 @@ async function resolveUser(login) {
 
 /* ---------- stack detection ---------- */
 
-/* Read from package.json and Scarb.toml rather than asked for in the registry,
- * so the chips are evidence. `live` marks the STRK20-relevant ones — those are
- * highlighted on the hub; frameworks are shown but muted. */
+/* Two passes. Dependencies are the strong signal — a package.json entry means
+ * the code actually imports it. Text is the weak signal, needed because parts
+ * of the Starknet privacy stack have no package to depend on yet (the Wallet
+ * API is a wallet method, sub-accounts aren't shipped, privacy_invoke is a
+ * Cairo entrypoint). The chip says "detected", not "verified", for that reason.
+ *
+ * `live` marks the Starknet and STRK20 stack — those are highlighted on the
+ * hub. Frameworks show up muted, because "uses React" is not interesting here.
+ * The list tracks the routes documented at strk20-by-example.org. */
 const DEP_SIGNALS = [
   [/@starkware-libs\/starknet-privacy/, "Privacy SDK", true],
   [/@avnu\/|avnu-sdk/, "AVNU", true],
   [/ekubo/i, "Ekubo", true],
   [/vesu/i, "Vesu", true],
-  [/^starknet$|starknet\.js/, "starknet.js", false],
-  [/get-starknet/, "get-starknet", false],
-  [/^next$/, "Next.js", false],
+  [/get-starknet/, "get-starknet", true],
+  [/^starknet$|starknet\.js/, "starknet.js", true],
+  [/starknetkit/i, "Starknetkit", true],
+  [/^@?next$/, "Next.js", false],
   [/^react$/, "React", false],
   [/^vite$/, "Vite", false],
   [/^svelte$/, "Svelte", false],
   [/^typescript$/, "TypeScript", false],
 ];
 
-async function detectTooling(owner, repo) {
+const TEXT_SIGNALS = [
+  [/privacy_invoke|privacyInvoke/, "privacy_invoke", true],
+  [/anonymizer/i, "Anonymizer", true],
+  [/sub-?accounts?/i, "Sub-accounts", true],
+  [/wallet\s?api|starknet_wallet|walletApi/i, "Wallet API", true],
+  [/discoverNotes|IndexerDiscoveryProvider|note discovery/i, "Note discovery", true],
+  [/viewing\s?key/i, "Viewing keys", true],
+  [/proving\s?service|PROVING_SERVICE|proverUrl/i, "Prover", true],
+  [/shielded|unshield/i, "Shielded balances", true],
+  [/snforge|starknet-foundry/i, "Starknet Foundry", false],
+  [/get-starknet/i, "get-starknet", true],
+  [/avnu/i, "AVNU", true],
+  [/ekubo/i, "Ekubo", true],
+  [/vesu/i, "Vesu", true],
+];
+
+async function detectTooling(owner, repo, readme) {
   const found = new Map();
   const add = (label, live) => { if (!found.has(label)) found.set(label, { label, live }); };
 
@@ -127,12 +150,7 @@ async function detectTooling(owner, repo) {
   }
 
   const scarb = await getTextFile(owner, repo, "Scarb.toml");
-  if (scarb) {
-    add("Cairo", true);
-    /* A dependency on the pool's interfaces means they are writing a contract
-     * that talks to it, not just a Cairo project that happens to exist. */
-    if (/privacy|anonymizer/i.test(scarb)) add("Anonymizer", true);
-  }
+  if (scarb) add("Cairo", true);
 
   const langs = await gh(`/repos/${owner}/${repo}/languages`);
   if (langs) {
@@ -140,9 +158,60 @@ async function detectTooling(owner, repo) {
     if (langs.Rust) add("Rust", false);
   }
 
-  /* Sub-accounts have no package to depend on yet, so the only signal is the
-   * team writing about them. Cheap to check while we already have the README. */
+  /* Text pass over whatever prose and config we already fetched — no extra
+   * requests. Scoped to the README and the manifests so a stray mention deep
+   * in a lockfile doesn't light up a chip. */
+  const corpus = [readme || "", pkgRaw || "", scarb || ""].join("\n");
+  for (const [re, label, live] of TEXT_SIGNALS) if (re.test(corpus)) add(label, live);
+
   return found;
+}
+
+/* ---------- deployed contracts ---------- */
+
+/* Which network a declared contract actually lives on, asked of the chains
+ * rather than taken on trust. Mainnet is checked first because that is what
+ * the sprint requires; a contract only on Sepolia is still worth showing, and
+ * an address that exists nowhere is reported as such instead of silently
+ * rendering a dead explorer link. */
+const RPCS = [
+  ["mainnet", process.env.MAINNET_RPC_URL || "https://rpc.starknet.lava.build"],
+  ["sepolia", process.env.SEPOLIA_RPC_URL || "https://api.cartridge.gg/x/starknet/sepolia"],
+];
+
+async function classHashAt(rpc, address) {
+  try {
+    const res = await fetch(rpc, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0", id: 1, method: "starknet_getClassHashAt",
+        params: ["latest", address],
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.result || null;
+  } catch { return null; }
+}
+
+async function resolveContracts(entry) {
+  const declared = Array.isArray(entry.contracts) ? entry.contracts : [];
+  const out = [];
+  for (const raw of declared) {
+    const address = typeof raw === "string" ? raw : raw.address;
+    if (!address || !/^0x[0-9a-fA-F]+$/.test(address)) {
+      warn(`${entry.slug} declared an address that isn't a felt: ${address}`);
+      continue;
+    }
+    let network = "unknown";
+    for (const [name, rpc] of RPCS) {
+      if (await classHashAt(rpc, address)) { network = name; break; }
+    }
+    if (network === "unknown") warn(`${entry.slug}: ${address.slice(0, 12)}… not found on mainnet or sepolia`);
+    out.push({ address, network });
+  }
+  return out;
 }
 
 /* ---------- generated sentences ---------- */
@@ -227,7 +296,7 @@ async function buildProject(entry, prev) {
     x_handle: entry.x_handle || "",
     inspired_by: entry.inspired_by || "",
     status: entry.status === "finished" ? "finished" : "building",
-    contracts: Array.isArray(entry.contracts) ? entry.contracts : [],
+    contracts: await resolveContracts(entry),
     /* The hub orders on this. Null (unreachable repo) sorts last and renders
      * as an em dash rather than a fake timestamp. */
     pushed_at: meta?.pushed_at || null,
@@ -245,17 +314,20 @@ async function buildProject(entry, prev) {
     return {
       ...base,
       head_sha: headSha,
+      readme_hash: prev.readme_hash || "",
       summary: prev.summary || "",
       description_long: prev.description_long || "",
       latest_push: prev.latest_push || "",
       tooling: prev.tooling || [],
+      has_readme: !!prev.has_readme,
+      additions: prev.additions || 0,
+      deletions: prev.deletions || 0,
     };
   }
 
   console.log(`  ${entry.slug}: reindexing`);
-  const tooling = await detectTooling(owner, repo);
   const readme = await getTextFile(owner, repo, "README.md");
-  if (readme && /sub-?accounts?/i.test(readme)) tooling.set("Sub-accounts", { label: "Sub-accounts", live: true });
+  const tooling = await detectTooling(owner, repo, readme);
 
   /* Description is regenerated only when the README actually changed — a push
    * that touches only source shouldn't rewrite the project's description. */
@@ -275,18 +347,28 @@ async function buildProject(entry, prev) {
    * first index) fall back to recent commits. */
   let latestPush = "";
   let changeText = "";
+  /* Lines moved in this push, GitHub-style. On a project's first index there is
+   * no previous SHA to diff against, so the head commit's own stats stand in. */
+  let additions = 0;
+  let deletions = 0;
   if (prev?.head_sha && headSha && prev.head_sha !== headSha) {
     const cmp = await gh(`/repos/${owner}/${repo}/compare/${prev.head_sha}...${headSha}`);
     if (cmp) {
       const msgs = (cmp.commits || []).map((c) => `- ${c.commit.message.split("\n")[0]}`).join("\n");
       const files = (cmp.files || []).slice(0, 30).map((f) => `${f.filename} (+${f.additions}/-${f.deletions})`).join("\n");
       changeText = `Commits:\n${msgs}\n\nFiles changed:\n${files}`;
+      for (const f of cmp.files || []) { additions += f.additions || 0; deletions += f.deletions || 0; }
     }
   }
   if (!changeText) {
     const commits = await gh(`/repos/${owner}/${repo}/commits?per_page=10`);
     if (commits?.length) {
       changeText = "Commits:\n" + commits.map((c) => `- ${c.commit.message.split("\n")[0]}`).join("\n");
+    }
+    if (headSha) {
+      const headCommit = await gh(`/repos/${owner}/${repo}/commits/${headSha}`);
+      additions = headCommit?.stats?.additions || 0;
+      deletions = headCommit?.stats?.deletions || 0;
     }
   }
   if (changeText) {
@@ -302,6 +384,9 @@ async function buildProject(entry, prev) {
     description_long: descriptionLong,
     latest_push: latestPush,
     tooling: [...tooling.values()],
+    has_readme: !!readme,
+    additions,
+    deletions,
   };
 }
 
