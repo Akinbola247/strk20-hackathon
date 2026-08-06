@@ -273,6 +273,59 @@ async function resolveDemo(entry, meta, owner, repo) {
   return "";
 }
 
+/* ---------- mainnet transactions ---------- */
+
+const POOL_ADDRESS = "0x040337b1af3c663e86e333bab5a4b28da8d4652a15a69beee2b677776ffe812a";
+const MIN_MAINNET_TXS = 3;
+
+/* Addresses come back from different tools with different leading-zero
+ * padding, so compare them as numbers. */
+const sameAddress = (a, b) => {
+  try { return BigInt(a) === BigInt(b); } catch { return false; }
+};
+
+async function rpc(url, method, params) {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+    });
+    if (!res.ok) return null;
+    return (await res.json()).result || null;
+  } catch { return null; }
+}
+
+/* A transaction hash proves three things a declared address cannot: the
+ * transaction is real, it succeeded, and it actually touched the pool. Private
+ * transactions are submitted by relayers, so the sender is never the team -
+ * which is exactly why an address was the wrong thing to ask for.
+ *
+ * Verified against the receipt: execution status, and whether any event in it
+ * came from the pool contract. */
+async function verifyTransactions(entry) {
+  const declared = Array.isArray(entry.transactions) ? entry.transactions : [];
+  const out = [];
+  for (const raw of declared.slice(0, 10)) {
+    const hash = typeof raw === "string" ? raw.trim() : "";
+    if (!/^0x[0-9a-fA-F]{1,64}$/.test(hash)) {
+      warn(`${entry.slug}: "${hash}" is not a transaction hash`);
+      continue;
+    }
+    const receipt = await rpc(RPCS[0][1], "starknet_getTransactionReceipt", [hash]);
+    if (!receipt) {
+      out.push({ hash, ok: false, pool: false, note: "not found on mainnet" });
+      continue;
+    }
+    const ok = receipt.execution_status === "SUCCEEDED";
+    const pool = (receipt.events || []).some((e) => sameAddress(e.from_address, POOL_ADDRESS));
+    if (!ok) out.push({ hash, ok: false, pool, note: "reverted" });
+    else if (!pool) out.push({ hash, ok: true, pool: false, note: "did not touch the pool" });
+    else out.push({ hash, ok: true, pool: true });
+  }
+  return out;
+}
+
 /* ---------- deployed contracts ---------- */
 
 /* Which network a declared contract actually lives on, asked of the chains
@@ -285,20 +338,8 @@ const RPCS = [
   ["sepolia", process.env.SEPOLIA_RPC_URL || "https://api.cartridge.gg/x/starknet/sepolia"],
 ];
 
-async function classHashAt(rpc, address) {
-  try {
-    const res = await fetch(rpc, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0", id: 1, method: "starknet_getClassHashAt",
-        params: ["latest", address],
-      }),
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.result || null;
-  } catch { return null; }
+async function classHashAt(url, address) {
+  return rpc(url, "starknet_getClassHashAt", ["latest", address]);
 }
 
 async function resolveContracts(entry) {
@@ -365,9 +406,9 @@ Good: "Added the useShieldedBalance hook and its tests." Bad: "Enhanced privacy 
 
 function validate(entry, index, seenSlugs) {
   const where = `registry.json[${index}]`;
-  /* starknet_address is absent because it is required to submit, not to
-     register. team is absent because builders are detected from the commit
-     history; the field only exists to top up whoever detection missed. */
+  /* team is absent because builders are detected from the commit history; the
+     field only exists to top up whoever detection missed. Proof of mainnet
+     activity lives in strk20.json, not here. */
   const required = ["slug", "name", "one_liner", "category", "repo_url"];
   for (const key of required) {
     if (!entry[key] || (Array.isArray(entry[key]) && !entry[key].length)) {
@@ -400,7 +441,9 @@ async function buildProject(entry, prev) {
   if (manifest) {
     entry = {
       ...entry,
-      starknet_address: manifest.starknet_address || entry.starknet_address,
+      transactions: Array.isArray(manifest.transactions) && manifest.transactions.length
+        ? manifest.transactions
+        : entry.transactions,
       demo_url: manifest.demo_url || entry.demo_url,
       demo_video: manifest.demo_video || entry.demo_video,
       x_handle: manifest.x_handle || entry.x_handle,
@@ -414,6 +457,8 @@ async function buildProject(entry, prev) {
 
   const demoUrl = await resolveDemo(entry, meta, owner, repo);
   const contracts = await resolveContracts(entry);
+  const transactions = await verifyTransactions(entry);
+  const verifiedTxs = transactions.filter((t) => t.ok && t.pool).length;
 
   /* Submission is a state the repository is in, not a form someone remembers to
    * fill in at 23:00 on the deadline. Each requirement is checked
@@ -422,8 +467,7 @@ async function buildProject(entry, prev) {
   const requirements = {
     demo: !!demoUrl,
     video: !!entry.demo_video,
-    address: !!entry.starknet_address,
-    mainnet: contracts.some((c) => c.network === "mainnet"),
+    mainnet: verifiedTxs >= MIN_MAINNET_TXS,
   };
   const ready = Object.values(requirements).every(Boolean);
 
@@ -440,8 +484,9 @@ async function buildProject(entry, prev) {
        They exist so we can add people to the builders group, not to be
        published on a page anyone can scrape. */
     inspired_by: entry.inspired_by || "",
-    starknet_address: entry.starknet_address || "",
     contracts,
+    transactions,
+    verified_txs: verifiedTxs,
     requirements,
     /* Derived, never declared. A team that meets every requirement is
      * submitted; one that stops meeting them is not. */

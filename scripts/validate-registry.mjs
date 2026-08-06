@@ -113,10 +113,6 @@ registry.forEach((entry, i) => {
     }
   }
 
-  if (entry.starknet_address && !/^0x[0-9a-fA-F]{1,64}$/.test(entry.starknet_address)) {
-    err(where, `starknet_address "${entry.starknet_address}" doesn't look like a Starknet address`);
-  }
-
   if (entry.x_handle && /^@|x\.com|twitter\.com/i.test(entry.x_handle)) {
     err(where, `x_handle should be the bare handle without "@" or a URL - got "${entry.x_handle}"`);
   }
@@ -136,7 +132,7 @@ registry.forEach((entry, i) => {
      demo video live in the team's own strk20.json, and the hub derives whether
      a project is submitted from what it can actually verify - so there is no
      second pull request to police. */
-  for (const moved of ["starknet_address", "contracts", "demo_url", "demo_video", "status"]) {
+  for (const moved of ["starknet_address", "transactions", "contracts", "demo_url", "demo_video", "status"]) {
     if (entry[moved] !== undefined) {
       notes.push(`${where}: "${moved}" moved to strk20.json in your own repository - it is ignored here. See CONTRIBUTING.md.`);
     }
