@@ -64,7 +64,7 @@ Nothing needs to be deployed to apply. Builders appear on the hub automatically,
 
 ## strk20.json
 
-A file at the root of your own repository. Add each field when you have it.
+A file at the root of your own repository. Add each field when you have it. This is what the panel reads when scoring, so it needs to be there before the deadline.
 
 ```json
 {
@@ -103,7 +103,7 @@ To be scored, it needs:
 
 - A live demo
 - A 3-minute demo video
-- Three mainnet transactions that touched the STRK20 pool
+- Three mainnet transaction hashes in `strk20.json`, each proving a real call against the STRK20 pool
 
 The hub shows which of these you're still missing.
 

@@ -40,7 +40,7 @@ That's everything. Nothing about mainnet, contracts, or demos belongs in this fi
 
 ## strk20.json, in your repository
 
-Everything you control goes in a `strk20.json` at the root of your own repo. **None of it belongs in your registration PR.** Add each piece whenever you have it - the hub reads the file within 30 minutes and updates your row on its own.
+Everything you control goes in a `strk20.json` at the root of your own repo, and it is what the panel reads when scoring. **None of it belongs in your registration PR.** Add each piece whenever you have it - the hub reads the file within 30 minutes and updates your row on its own.
 
 ```json
 {
