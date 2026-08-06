@@ -12,7 +12,7 @@ The sprint is mainnet-only. Prizes require **three real transactions** from the 
 |---|---|
 | A Starknet wallet | Ready (formerly Argent) or Braavos, switched to **Mainnet** |
 | STRK for gas and for shielding | From a centralized exchange that supports Starknet withdrawals, or bridged from Ethereum |
-| The address you registered | Your `starknet_address` in `registry.json`. Eligibility is checked against exactly this address - if you switch wallets mid-sprint, open a PR to update it. |
+| The account you shield from | Goes in `strk20.json` in your own repository. Eligibility is checked against exactly this account, so keep it current if you switch wallets. |
 
 ## Verified mainnet values
 

@@ -77,7 +77,7 @@ A file at the root of your own repository. Add each field when you have it.
 
 | Field | Required | Notes |
 |---|---|---|
-| `starknet_address` | to be scored | The address your mainnet transactions come from |
+| `starknet_address` | to be scored | The mainnet account the app shields from. Private transactions are submitted by relayers, so the on-chain sender is never the user; the pool records this account in its `Deposit` event, and the three-transaction rule is checked against it |
 | `contracts` | to be scored | Deployed addresses, shown with their network |
 | `demo_video` | to be scored | Your 3-minute demo video |
 | `demo_url` | no | Only if your demo isn't found automatically |
@@ -89,7 +89,7 @@ A file at the root of your own repository. Add each field when you have it.
 
 - Open to individuals and teams, new projects or existing ones.
 - Your repository must be **public and open-source**, with a license.
-- To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your `strk20.json`.
+- To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** made against the pool by the account in your `strk20.json`.
 - A **public demo URL** anyone can open.
 - One payout address per winning team.
 
@@ -103,7 +103,7 @@ To be scored, it needs:
 
 - A live demo
 - A 3-minute demo video
-- A Starknet address
+- A Starknet address: the mainnet account the app shields from
 - At least one contract deployed to mainnet
 
 The hub shows which of these you're still missing.
