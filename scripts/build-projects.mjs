@@ -133,7 +133,7 @@ const TEXT_SIGNALS = [
   [/vesu/i, "Vesu", true],
 ];
 
-async function detectTooling(owner, repo, readme) {
+async function detectTooling(owner, repo, readme, langs) {
   const found = new Map();
   const add = (label, live) => { if (!found.has(label)) found.set(label, { label, live }); };
 
@@ -151,7 +151,6 @@ async function detectTooling(owner, repo, readme) {
   const scarb = await getTextFile(owner, repo, "Scarb.toml");
   if (scarb) add("Cairo", true);
 
-  const langs = await gh(`/repos/${owner}/${repo}/languages`);
   if (langs) {
     if (langs.Cairo) add("Cairo", true);
     if (langs.Rust) add("Rust", false);
@@ -416,12 +415,14 @@ async function buildProject(entry, prev) {
       has_readme: !!prev.has_readme,
       additions: prev.additions || 0,
       deletions: prev.deletions || 0,
+      churn_pct: prev.churn_pct || 0,
     };
   }
 
   console.log(`  ${entry.slug}: reindexing`);
   const readme = await getTextFile(owner, repo, "README.md");
-  const tooling = await detectTooling(owner, repo, readme);
+  const langs = await gh(`/repos/${owner}/${repo}/languages`);
+  const tooling = await detectTooling(owner, repo, readme, langs);
 
   /* Description is regenerated only when the README actually changed — a push
    * that touches only source shouldn't rewrite the project's description. */
@@ -473,10 +474,25 @@ async function buildProject(entry, prev) {
     latestPush = out?.latest_push || prev?.latest_push || "";
   }
 
+  /* How much of the codebase this push moved. Lines changed over an estimate
+   * of the whole tree, from the byte totals GitHub already gave us for language
+   * detection — roughly 40 bytes a line across the languages in play here.
+   *
+   * An estimate is the right call: the alternative is /stats/code_frequency,
+   * which answers 202 while GitHub computes it and would make the first run on
+   * every new project unreliable. The number is a momentum signal, not an
+   * audit, and it only has to be right to the nearest percent. */
+  const totalBytes = Object.values(langs || {}).reduce((a, b) => a + b, 0);
+  const estimatedLines = totalBytes ? totalBytes / 40 : 0;
+  const churnPct = estimatedLines
+    ? Math.min(100, Math.round(((additions + deletions) / estimatedLines) * 1000) / 10)
+    : 0;
+
   return {
     ...base,
     head_sha: headSha,
     readme_hash: readmeHash,
+    churn_pct: churnPct,
     summary,
     description_long: descriptionLong,
     latest_push: latestPush,
