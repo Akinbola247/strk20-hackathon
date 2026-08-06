@@ -9,6 +9,7 @@ Everyone works in their own public repository. Every push shows up on the hub at
 ## Contents
 
 - [How to enter](#how-to-enter)
+- [One pull request, then we track it](#one-pull-request-then-we-track-it)
 - [Your registry entry](#your-registry-entry)
 - [Rules](#rules)
 - [Submitting](#submitting)
@@ -30,6 +31,25 @@ Everyone works in their own public repository. Every push shows up on the hub at
 **Start building before your PR is merged.** Registration is a formality, not a gate - nothing about it unlocks the stack, and review is usually same-day. Merging only decides when your project appears on the hub.
 
 Registration stays open for the whole sprint. Registering on day 12 is fine; you just have less time.
+
+## One pull request, then we track it
+
+*You register once. Everything after that is read from your repository automatically - you never open a PR to update your progress.*
+
+| Kept up to date for you | Where it comes from |
+|---|---|
+| Your latest push, and how long ago | your repository's commit history |
+| A sentence describing what just landed | the commits and files in that push |
+| Lines added and removed | the diff since we last looked |
+| What your project does | your README |
+| The stack you're using | `package.json`, `Scarb.toml`, and your README - the Privacy SDK, the Wallet API, `privacy_invoke`, anonymizers, sub-accounts, AVNU, Cairo, and the rest |
+| Your deployed contracts, and which network each is on | checked against Starknet mainnet and Sepolia directly |
+| Your live demo | GitHub Pages, then your repo's **Website** field, then your latest deployment |
+| Your team's avatars and names | the GitHub handles in your entry |
+
+Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it appears on its own. Deploy a contract and it shows up with the right network beside it.
+
+Only two things ever need another pull request: **submitting** (flipping `status` to `finished` at the end), and **changing your Starknet address** if you switch wallets mid-sprint.
 
 ## Your registry entry
 

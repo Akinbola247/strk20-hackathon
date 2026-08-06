@@ -23,6 +23,8 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
 
 **Start building before it's merged.** Registration doesn't unlock anything - merging only decides when your project appears on the hub.
 
+**This is the only pull request you need until you submit.** Your pushes, what changed in them, lines added and removed, your project description, the stack you're using, your deployed contracts and their network, your demo, and your team's avatars are all read from your repository and refreshed every 30 minutes. You never open a PR to report progress.
+
 ### Fields
 
 - **`slug`** - lowercase and hyphenated, unique across the registry. This is your project's id on the hub.
