@@ -75,12 +75,12 @@ A file at the root of your own repository. Add each field when you have it.
 }
 ```
 
-| Field | Notes |
-|---|---|
-| `starknet_address` | The address your mainnet transactions come from |
-| `contracts` | Deployed addresses, shown with their network |
-| `demo_video` | Your 3-minute demo video |
-| `demo_url` | Only if your demo isn't found automatically |
+| Field | Required | Notes |
+|---|---|---|
+| `starknet_address` | to be scored | The address your mainnet transactions come from |
+| `contracts` | to be scored | Deployed addresses, shown with their network |
+| `demo_video` | to be scored | Your 3-minute demo video |
+| `demo_url` | no | Only if your demo isn't found automatically |
 
 > [!NOTE]
 > Your demo is usually found without you doing anything: GitHub Pages first, then your repository's **Website** field, then your latest deployment. Filling in the Website field is the one-click way to be certain.
