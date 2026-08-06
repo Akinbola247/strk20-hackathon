@@ -81,7 +81,7 @@ Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it 
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
 | `team` | yes | bare GitHub handles. Avatars and names on the hub are resolved from these. |
-| `telegram` | yes | bare Telegram usernames, no `@`, one per person who needs group access. Used only to add you to the group - never published on the hub. |
+| `telegram` | yes | bare Telegram usernames, no `@`, one per person who needs group access. We use them to check whether you're already in the builders group and to add you if you aren't. Never published on the hub. |
 | `x_handle` | no | without the `@`. Used to credit you in sprint updates. |
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
 

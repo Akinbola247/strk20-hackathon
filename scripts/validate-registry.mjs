@@ -45,6 +45,7 @@ function parseRepo(url) {
 
 const seen = new Map();
 const repoChecks = [];
+const toAdd = [];
 
 registry.forEach((entry, i) => {
   /* Always carry the index: two entries with the same slug is itself an error,
@@ -94,6 +95,7 @@ registry.forEach((entry, i) => {
         err(where, `telegram entry "${h}" should be a bare username without "@" or a t.me link`);
       }
     }
+    toAdd.push({ slug: entry.slug || `entry #${i + 1}`, handles: entry.telegram });
     if (Array.isArray(entry.team) && entry.telegram.length !== entry.team.length) {
       notes.push(`${where}: ${entry.team.length} GitHub handles but ${entry.telegram.length} Telegram usernames — everyone who wants group access needs one.`);
     }
@@ -168,6 +170,14 @@ if (repoChecks.length && TOKEN) {
 }
 
 for (const n of notes) console.log(`note: ${n}`);
+
+/* Surfaced for whoever reviews the pull request: these are the people to check
+   against the builders group, and to add if the application holds up. Saves
+   opening the diff to find them. */
+if (toAdd.length) {
+  console.log("\nTelegram usernames in this registry:");
+  for (const { slug, handles } of toAdd) console.log(`  ${slug}: ${handles.join(", ")}`);
+}
 
 if (errors.length) {
   console.error(`\n${errors.length} problem${errors.length === 1 ? "" : "s"} with registry.json:\n`);
