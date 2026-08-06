@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "slug": "strk20-starter-kit",
+    "name": "STRK20 Starter Kit",
+    "one_liner": "Next.js starter for privacy dapps: wallet picker, shield, unshield, private transfer.",
+    "category": "Tooling",
+    "repo_url": "https://github.com/Akashneelesh/strk20-starter-kit",
+    "team": ["Akashneelesh"],
+    "inspired_by": "IDEA-09"
+  },
+  {
+    "slug": "wallet-account-demo",
+    "name": "Wallet Account Demo",
+    "one_liner": "Reference implementation of the wallet-account flow against the Privacy Wallet API.",
+    "category": "Consumer",
+    "repo_url": "https://github.com/PhilippeR26/Starknet-WalletAccount",
+    "team": ["PhilippeR26"],
+    "inspired_by": "IDEA-10"
+  },
+  {
+    "slug": "awesome-strk20",
+    "name": "Awesome STRK20",
+    "one_liner": "Curated index of every SDK, helper contract and proof-of-concept built on the pool.",
+    "category": "Infra",
+    "repo_url": "https://github.com/Akashneelesh/awesome-strk20",
+    "team": ["Akashneelesh"]
+  },
+  {
+    "slug": "starknet-js",
+    "name": "starknet.js",
+    "one_liner": "The JavaScript library, with STRK20 support through WalletAccountV6.",
+    "category": "Tooling",
+    "repo_url": "https://github.com/starknet-io/starknet.js",
+    "team": ["starknet-io"]
+  },
+  {
+    "slug": "privacy-sdk",
+    "name": "Privacy SDK",
+    "one_liner": "Pool contracts, the TypeScript SDK, and the proving service in one monorepo.",
+    "category": "Infra",
+    "repo_url": "https://github.com/starkware-libs/starknet-privacy",
+    "team": ["starkware-libs"]
+  }
+]
