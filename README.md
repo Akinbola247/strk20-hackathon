@@ -114,7 +114,7 @@ A named panel scores every project after submissions close.
 
 | Weight | Criterion |
 |---|---|
-| 30% | **STRK20 integration depth** - shielded balances, private transfers, anonymizer contracts, the SDK |
+| 30% | **STRK20 integration depth** - shielded balances, private transfers, anonymizer contracts, the SDK, using stealth accounts |
 | 30% | **Working mainnet product** - it runs, on mainnet, for a real user |
 | 25% | **Innovation** - something the ecosystem doesn't have yet, or a better take on something it does |
 | 15% | **Documentation & open-source quality** - a README someone can follow, code someone can build on, a license |
