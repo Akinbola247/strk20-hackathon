@@ -2,7 +2,9 @@
 
 Thanks for building on the Starknet privacy pool. Everything here happens through pull requests.
 
-## Registering your project
+This is a curated sprint. Opening a pull request is an application, not a registration - merging it means we're adding you to the builders group, which we're deliberately keeping small and focused on people who are genuinely shipping.
+
+## Applying
 
 1. Fork the repo and edit `registry.json`.
 2. Append one object to the array, keeping the existing format:
@@ -19,7 +21,7 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
 3. Don't modify anyone else's entry. Append yours; leave the rest alone.
 4. Open the pull request. A check runs automatically and reports every problem at once.
 
-**Start building before it's merged.** Registration doesn't unlock anything - merging only decides when your project appears on the hub.
+**Tell us what you're building in the PR description.** The automated check only looks at the shape of your entry; a human reads the rest, and that's what decides whether we add you to the group. If you're already in the privacy builders group, this is a formality.
 
 **This is the only pull request you need until you submit.** Your pushes, what changed in them, lines added and removed, your project description, the stack you're using, your deployed contracts and their network, your demo, and your team's avatars are all read from your repository and refreshed every 30 minutes. You never open a PR to report progress.
 
@@ -30,6 +32,7 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
 - **`category`** - one of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
 - **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
 - **`team`** - bare GitHub handles, not URLs and not `@mentions`. Avatars and names on the hub come from these.
+- **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person who needs access to the builders group. Kept in this repository so we can add you; never published to the hub.
 - **`x_handle`** - optional, without the `@`. Used to credit you in sprint updates.
 - **`inspired_by`** - optional, an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
 

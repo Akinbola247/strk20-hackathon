@@ -377,6 +377,9 @@ async function buildProject(entry, prev) {
     demo_url: demoUrl,
     demo_video: entry.demo_video || "",
     x_handle: entry.x_handle || "",
+    /* Telegram usernames stay in registry.json and never reach projects.json.
+       They exist so we can add people to the builders group, not to be
+       published on a page anyone can scrape. */
     inspired_by: entry.inspired_by || "",
     starknet_address: entry.starknet_address || "",
     contracts,

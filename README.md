@@ -1,6 +1,6 @@
 # Private Sprint
 
-> A 17-day sprint to ship a real privacy application on Starknet mainnet. Register by pull request, build in public, and watch the whole field ship alongside you.
+> A small, curated sprint to ship a real privacy application on Starknet mainnet. Apply by pull request, build in public alongside the other builders working on Starknet privacy.
 
 **August 14 - August 31, 2026.** $5,000 USD paid in STRK, split across the top three projects.
 
@@ -8,7 +8,7 @@ Everyone works in their own public repository. Every push shows up on the hub at
 
 ## Contents
 
-- [How to enter](#how-to-enter)
+- [How to apply](#how-to-apply)
 - [One pull request, then we track it](#one-pull-request-then-we-track-it)
 - [Your registry entry](#your-registry-entry)
 - [strk20.json](#strk20json)
@@ -21,17 +21,19 @@ Everyone works in their own public repository. Every push shows up on the hub at
 - [After the sprint](#after-the-sprint)
 - [Contributing](#contributing)
 
-## How to enter
+## How to apply
 
-*Registration is a pull request against `registry.json`. It takes about two minutes.*
+*This is a curated sprint. The pull request is an application, and merging it means we're adding you to the builders group.*
 
-1. Fork this repository and add one object to [`registry.json`](registry.json).
-2. Open a pull request. A check validates your entry and reports anything off - a slug already taken, a repository that isn't public, a field in the wrong shape.
-3. Join the Telegram group. The link is in the comment on your merged PR.
+1. Fork this repository and add one object to [`registry.json`](registry.json), including your Telegram username.
+2. Open a pull request. A check validates the shape of your entry; a human reads the rest.
+3. If we merge it, you're in the Telegram group with the other builders working on Starknet privacy, and your project appears on the hub.
 
-**Start building before your PR is merged.** Registration is a formality, not a gate - nothing about it unlocks the stack, and review is usually same-day. Merging only decides when your project appears on the hub.
+**We're keeping the group small and serious.** It exists so people building privacy on Starknet can talk to each other and to the STRK20 team, and that only works if everyone in it is genuinely building. We'd rather have fifteen teams who ship than fifty who registered.
 
-Registration stays open for the whole sprint. Registering on day 12 is fine; you just have less time.
+If you're already in the privacy builders group, this is a formality - open the PR and carry on. If we don't know you yet, tell us what you're building and why in the PR description. That's what we read.
+
+Applications stay open for the whole sprint. Applying on day 12 is fine; you just have less time.
 
 ## One pull request, then we track it
 
@@ -65,6 +67,7 @@ Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it 
   "category": "Consumer",
   "repo_url": "https://github.com/your-org/zk-mail",
   "team": ["your-github-handle", "teammate-handle"],
+  "telegram": ["your_telegram", "teammate_telegram"],
   "x_handle": "yourhandle",
   "inspired_by": "IDEA-07"
 }
@@ -78,6 +81,7 @@ Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it 
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
 | `team` | yes | bare GitHub handles. Avatars and names on the hub are resolved from these. |
+| `telegram` | yes | bare Telegram usernames, no `@`, one per person who needs group access. Used only to add you to the group - never published on the hub. |
 | `x_handle` | no | without the `@`. Used to credit you in sprint updates. |
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
 
@@ -114,7 +118,7 @@ Ideas are **not** exclusive. Several teams working from the same idea is fine an
 
 ## Rules
 
-- Open to anyone. Individuals and teams, new projects or existing ones.
+- Anyone can apply. Individuals and teams, new projects or existing ones - but participation is curated, and not every application is accepted.
 - Your repository must be **public and open-source**, with a license.
 - To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your `strk20.json`. You do not need an address to register - add it when you have one.
 - A **public demo URL** anyone can open. Not a video, not a localhost screenshot.

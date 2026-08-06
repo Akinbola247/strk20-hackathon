@@ -83,6 +83,22 @@ registry.forEach((entry, i) => {
     err(where, `status "${entry.status}" must be "building" or "finished"`);
   }
 
+  /* Participation is curated: the PR is how we decide whether to add someone to
+     the builders group, so a reachable Telegram handle is the one thing we
+     cannot proceed without. */
+  if (!Array.isArray(entry.telegram) || entry.telegram.length === 0) {
+    err(where, '"telegram" must be a non-empty array of Telegram usernames, one per person joining the group');
+  } else {
+    for (const h of entry.telegram) {
+      if (typeof h !== "string" || /^@|t\.me|https?:|\s/.test(h)) {
+        err(where, `telegram entry "${h}" should be a bare username without "@" or a t.me link`);
+      }
+    }
+    if (Array.isArray(entry.team) && entry.telegram.length !== entry.team.length) {
+      notes.push(`${where}: ${entry.team.length} GitHub handles but ${entry.telegram.length} Telegram usernames — everyone who wants group access needs one.`);
+    }
+  }
+
   if (!Array.isArray(entry.team) || entry.team.length === 0) {
     err(where, '"team" must be a non-empty array of GitHub handles');
   } else {
