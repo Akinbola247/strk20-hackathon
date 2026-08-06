@@ -428,7 +428,10 @@ async function buildProject(entry, prev) {
   let summary = prev?.summary || "";
   let descriptionLong = prev?.description_long || "";
   const readmeHash = readme ? readme.length + ":" + readme.slice(0, 200) : "";
-  if (readme && readmeHash !== (prev?.readme_hash || "")) {
+  /* Regenerate when the README changed, and also whenever we simply don't have
+     a summary yet — same reasoning as the SHA cache. A README that never
+     changes again would otherwise keep an empty description forever. */
+  if (readme && (readmeHash !== (prev?.readme_hash || "") || !summary)) {
     const out = await openai(DESC_SYSTEM, `Project name: ${entry.name}\nTeam's own one-liner: ${entry.one_liner}\n\nREADME:\n${readme.slice(0, 6000)}`);
     if (out) {
       summary = out.summary || summary;
