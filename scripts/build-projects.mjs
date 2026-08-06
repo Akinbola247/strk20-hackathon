@@ -396,8 +396,14 @@ async function buildProject(entry, prev) {
   const headSha = head?.[0]?.sha || null;
 
   /* Nothing new since the last run: reuse everything generated. This is the
-   * common case on a 30-minute cron and costs no tokens. */
-  if (prev && headSha && prev.head_sha === headSha) {
+   * common case on a 30-minute cron and costs no tokens.
+   *
+   * An empty summary counts as a miss even when the SHA matches. Otherwise a
+   * run that failed to generate one — no key, a rate limit, a bad response —
+   * poisons the cache permanently: the SHA never changes again for a finished
+   * project, so it would never retry. */
+  const summaryUsable = !OPENAI_KEY || !!prev?.summary;
+  if (prev && headSha && prev.head_sha === headSha && summaryUsable) {
     console.log(`  ${entry.slug}: unchanged`);
     return {
       ...base,
