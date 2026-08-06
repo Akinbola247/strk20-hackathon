@@ -166,6 +166,27 @@ async function detectTooling(owner, repo, readme) {
   return found;
 }
 
+/* ---------- the team's own manifest ---------- */
+
+/* strk20.json at the root of a team's repository. Everything a team controls
+ * lives here rather than in registry.json, so they never open a second pull
+ * request against us — they edit a file in their own repo and the hub picks it
+ * up on the next run.
+ *
+ * registry.json still owns identity (slug, name, category, team), because that
+ * is what review is for. This owns everything else. */
+async function readManifest(owner, repo) {
+  const raw = await getTextFile(owner, repo, "strk20.json");
+  if (!raw) return null;
+  try {
+    const m = JSON.parse(raw);
+    return typeof m === "object" && m !== null ? m : null;
+  } catch {
+    warn(`${owner}/${repo} has a strk20.json that isn't valid JSON — ignoring it`);
+    return null;
+  }
+}
+
 /* ---------- deployed demos ---------- */
 
 /* Teams shouldn't have to open a second pull request the day their site goes
@@ -314,8 +335,39 @@ async function buildProject(entry, prev) {
   if (!meta) warn(`${owner}/${repo} is unreachable — is it public?`);
   if (meta?.private) warn(`${owner}/${repo} is private — public repositories are required`);
 
+  /* The team's own file wins for the fields they control. They can change any
+     of these without touching our repository, which is the whole point. */
+  const manifest = await readManifest(owner, repo);
+  if (manifest) {
+    entry = {
+      ...entry,
+      starknet_address: manifest.starknet_address || entry.starknet_address,
+      demo_url: manifest.demo_url || entry.demo_url,
+      demo_video: manifest.demo_video || entry.demo_video,
+      x_handle: manifest.x_handle || entry.x_handle,
+      contracts: Array.isArray(manifest.contracts) && manifest.contracts.length
+        ? manifest.contracts
+        : entry.contracts,
+    };
+  }
+
   const builders = [];
   for (const login of entry.team) builders.push(await resolveUser(login));
+
+  const demoUrl = await resolveDemo(entry, meta, owner, repo);
+  const contracts = await resolveContracts(entry);
+
+  /* Submission is a state the repository is in, not a form someone remembers to
+   * fill in at 23:00 on the deadline. Each requirement is checked
+   * independently so the hub can tell a team exactly what is still missing,
+   * rather than a single pass/fail they have to reverse-engineer. */
+  const requirements = {
+    demo: !!demoUrl,
+    video: !!entry.demo_video,
+    address: !!entry.starknet_address,
+    mainnet: contracts.some((c) => c.network === "mainnet"),
+  };
+  const ready = Object.values(requirements).every(Boolean);
 
   const base = {
     slug: entry.slug,
@@ -323,11 +375,16 @@ async function buildProject(entry, prev) {
     one_liner: entry.one_liner,
     category: entry.category,
     repo_url: meta?.html_url || entry.repo_url,
-    demo_url: await resolveDemo(entry, meta, owner, repo),
+    demo_url: demoUrl,
+    demo_video: entry.demo_video || "",
     x_handle: entry.x_handle || "",
     inspired_by: entry.inspired_by || "",
-    status: entry.status === "finished" ? "finished" : "building",
-    contracts: await resolveContracts(entry),
+    starknet_address: entry.starknet_address || "",
+    contracts,
+    requirements,
+    /* Derived, never declared. A team that meets every requirement is
+     * submitted; one that stops meeting them is not. */
+    status: ready ? "finished" : "building",
     /* The hub orders on this. Null (unreachable repo) sorts last and renders
      * as an em dash rather than a fake timestamp. */
     pushed_at: meta?.pushed_at || null,

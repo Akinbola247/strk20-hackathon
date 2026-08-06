@@ -112,12 +112,14 @@ registry.forEach((entry, i) => {
     repoChecks.push({ where, ...repo });
   }
 
-  /* Submission requirements, only enforced once a team says they are done.
-     starknet_address is deliberately not required to register — asking for it
-     up front implies you need something deployed before you can enter. */
-  if (entry.status === "finished") {
-    if (!entry.demo_url) err(where, 'status is "finished" but demo_url is empty — a public demo anyone can open is required to submit');
-    if (!entry.starknet_address) err(where, 'status is "finished" but starknet_address is empty — it is how the three mainnet transactions are verified');
+  /* Nothing here enforces submission any more. Mainnet address, contracts and
+     demo video live in the team's own strk20.json, and the hub derives whether
+     a project is submitted from what it can actually verify — so there is no
+     second pull request to police. */
+  for (const moved of ["starknet_address", "contracts", "demo_url", "demo_video", "status"]) {
+    if (entry[moved] !== undefined) {
+      notes.push(`${where}: "${moved}" moved to strk20.json in your own repository — it is ignored here. See CONTRIBUTING.md.`);
+    }
   }
 });
 

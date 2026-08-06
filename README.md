@@ -11,6 +11,7 @@ Everyone works in their own public repository. Every push shows up on the hub at
 - [How to enter](#how-to-enter)
 - [One pull request, then we track it](#one-pull-request-then-we-track-it)
 - [Your registry entry](#your-registry-entry)
+- [strk20.json](#strk20json)
 - [Rules](#rules)
 - [Submitting](#submitting)
 - [Judging](#judging)
@@ -46,10 +47,11 @@ Registration stays open for the whole sprint. Registering on day 12 is fine; you
 | Your deployed contracts, and which network each is on | checked against Starknet mainnet and Sepolia directly |
 | Your live demo | GitHub Pages, then your repo's **Website** field, then your latest deployment |
 | Your team's avatars and names | the GitHub handles in your entry |
+| Your Starknet address, contracts and demo video | `strk20.json` in your own repository - see below |
 
 Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it appears on its own. Deploy a contract and it shows up with the right network beside it.
 
-Only two things ever need another pull request: **submitting** (flipping `status` to `finished`, and adding your `starknet_address` if you haven't yet), and **changing that address** if you switch wallets mid-sprint.
+**There is no second pull request.** Submitting isn't a form you remember to fill in before the deadline - it's a state your repository is in, and the hub shows you exactly which parts you're missing.
 
 ## Your registry entry
 
@@ -75,16 +77,36 @@ Only two things ever need another pull request: **submitting** (flipping `status
 | `one_liner` | yes | one sentence, roughly 120 characters |
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
-| `starknet_address` | to submit | the address your mainnet transactions come from. Add it whenever you have one - it is only needed to verify eligibility at the end. |
 | `team` | yes | bare GitHub handles. Avatars and names on the hub are resolved from these. |
 | `x_handle` | no | without the `@`. Used to credit you in sprint updates. |
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
-| `demo_url` | no | usually unnecessary - see the note below |
-| `contracts` | no | array of deployed addresses; the hub checks which network each is on |
-| `status` | to submit | leave it out while you build. Set it to `finished` in your submission PR. |
+
+That's the whole entry. Nothing about mainnet, contracts, or demos belongs here - you don't need anything deployed to register.
+
+## strk20.json
+
+*A file in your own repository, holding everything you control. Edit it whenever you like; the hub reads it within 30 minutes. This is what replaces a submission PR.*
+
+```json
+{
+  "starknet_address": "0x0123...",
+  "contracts": ["0x0abc...", "0x0def..."],
+  "demo_video": "https://youtu.be/...",
+  "demo_url": "https://your-demo.example"
+}
+```
+
+| Field | Notes |
+|---|---|
+| `starknet_address` | The address your mainnet transactions come from. Eligibility is checked against exactly this one. |
+| `contracts` | Deployed addresses. Each is checked against mainnet and Sepolia, and shown with the network it was found on. |
+| `demo_video` | Your 3-minute demo video. |
+| `demo_url` | Only if your demo isn't discoverable automatically - see the note below. |
+
+Every field is optional while you build. You need all of them by the deadline, and the hub shows which are still missing.
 
 > [!NOTE]
-> **You don't need a second pull request when your demo goes live.** The hub looks for a deployed site on every project automatically: GitHub Pages first, then the repository's **Website** field, then your latest deployment. Filling in the Website field on your repo page is the one-click way to be certain it's found. Set `demo_url` by hand only if your demo lives somewhere none of those point to.
+> **Your demo is usually found without you doing anything.** The hub checks GitHub Pages first, then the repository's **Website** field, then your latest deployment. Filling in the Website field on your repo page is the one-click way to be certain. Set `demo_url` in `strk20.json` only if your demo lives somewhere none of those point to.
 
 Ideas are **not** exclusive. Several teams working from the same idea is fine and expected - the hub shows how many, so you can see what's crowded.
 
@@ -92,18 +114,22 @@ Ideas are **not** exclusive. Several teams working from the same idea is fine an
 
 - Open to anyone. Individuals and teams, new projects or existing ones.
 - Your repository must be **public and open-source**, with a license.
-- To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your entry. You do not need an address to register - add it when you have one.
+- To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your `strk20.json`. You do not need an address to register - add it when you have one.
 - A **public demo URL** anyone can open. Not a video, not a localhost screenshot.
 - One payout address per winning team.
 
 ## Submitting
 
-Before **August 31, 23:59 UTC**, open a second pull request changing your entry's `status` to `finished` and filling in `starknet_address` if you haven't already. Your repository's README must contain:
+*There is nothing to submit. Whatever your repository shows at **August 31, 23:59 UTC** is your entry.*
 
-- What it does and why it needed privacy.
-- How to run it locally.
-- A link to your **3-minute demo video**.
-- Your mainnet contract addresses.
+A project counts as submitted once four things are true, all checked automatically:
+
+- A **live demo** anyone can open.
+- A **3-minute demo video**, linked in `strk20.json`.
+- Your **Starknet address** in `strk20.json`.
+- At least one **contract deployed to mainnet**.
+
+Your README should still cover what it does and why it needed privacy, how to run it locally, and your mainnet contract addresses - that's what judges read, and it carries 15% of the score.
 
 ## Judging
 
