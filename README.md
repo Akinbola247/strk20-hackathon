@@ -85,7 +85,7 @@ That's the whole entry. Nothing about mainnet, contracts, or demos belongs here 
 
 ## strk20.json
 
-*A file in your own repository, holding everything you control. Edit it whenever you like; the hub reads it within 30 minutes. This is what replaces a submission PR.*
+*A file in your own repository. None of this goes in your registration PR - add each piece to your own repo whenever you have it, and the hub picks it up within 30 minutes.*
 
 ```json
 {
@@ -103,7 +103,9 @@ That's the whole entry. Nothing about mainnet, contracts, or demos belongs here 
 | `demo_video` | Your 3-minute demo video. |
 | `demo_url` | Only if your demo isn't discoverable automatically - see the note below. |
 
-Every field is optional while you build. You need all of them by the deadline, and the hub shows which are still missing.
+**Nothing here is required to register, and adding it is never a pull request.** Deployed a contract? Paste the address in. Recorded your demo video? Add the link. The hub reads the file on its next run and your row updates on its own.
+
+It matters that these end up in your repository, though: they're how we know your app is on mainnet and how judges reach your demo. A project with none of them still shows on the hub - it just can't be judged. The hub shows each team which pieces are still missing, so nothing is a surprise on the last day.
 
 > [!NOTE]
 > **Your demo is usually found without you doing anything.** The hub checks GitHub Pages first, then the repository's **Website** field, then your latest deployment. Filling in the Website field on your repo page is the one-click way to be certain. Set `demo_url` in `strk20.json` only if your demo lives somewhere none of those point to.
@@ -120,9 +122,9 @@ Ideas are **not** exclusive. Several teams working from the same idea is fine an
 
 ## Submitting
 
-*There is nothing to submit. Whatever your repository shows at **August 31, 23:59 UTC** is your entry.*
+*There is nothing to submit, and no second pull request. Whatever your repository shows at **August 31, 23:59 UTC** is your entry.*
 
-A project counts as submitted once four things are true, all checked automatically:
+By then, four things need to exist for judges to be able to score you. All are read from your repository automatically - you never tell us about any of them:
 
 - A **live demo** anyone can open.
 - A **3-minute demo video**, linked in `strk20.json`.

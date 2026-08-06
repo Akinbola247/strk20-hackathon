@@ -37,7 +37,7 @@ That's everything. Nothing about mainnet, contracts, or demos belongs in this fi
 
 ## strk20.json, in your repository
 
-Everything you control goes in a `strk20.json` at the root of your own repo. You edit it whenever you like and the hub reads it within 30 minutes - no pull request against us, ever.
+Everything you control goes in a `strk20.json` at the root of your own repo. **None of it belongs in your registration PR.** Add each piece whenever you have it - the hub reads the file within 30 minutes and updates your row on its own.
 
 ```json
 {
@@ -53,7 +53,9 @@ Everything you control goes in a `strk20.json` at the root of your own repo. You
 - **`demo_video`** - your 3-minute demo video.
 - **`demo_url`** - only if your demo isn't found automatically. See below.
 
-Every field is optional while you build. You need all of them by the deadline.
+Every field is optional, and none of them gates anything. Deployed a contract? Paste the address in. Recorded your video? Add the link. Switched wallets? Change the address.
+
+It does matter that they end up there before the deadline: they're how we know your app is really on mainnet and how judges reach your demo. A project with none of them still appears on the hub - it just can't be scored. The hub shows what's still missing, so it isn't a surprise on the last day.
 
 ### Your demo is picked up automatically
 
