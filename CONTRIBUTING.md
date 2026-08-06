@@ -2,7 +2,7 @@
 
 Thanks for building on the Starknet privacy pool. Everything here happens through pull requests.
 
-This is a curated sprint. Opening a pull request is an application, not a registration - merging it means we're adding you to the builders group, which we're deliberately keeping small and focused on people who are genuinely shipping.
+Opening a pull request is an application, not a registration: we review it, and merging it means we're adding you to the builders group.
 
 ## Applying
 

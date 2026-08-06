@@ -21,5 +21,5 @@
 - [ ] `telegram` has a bare username for everyone who needs access to the builders group
 
 <!-- Nothing about mainnet, contracts, or a demo belongs here. Those live in a
-     strk20.json in your own repository and we read them from there — see
+     strk20.json in your own repository and we read them from there - see
      CONTRIBUTING.md. You never open a second pull request. -->

@@ -1,4 +1,4 @@
-/* validate-registry.mjs — check registry.json on every pull request.
+/* validate-registry.mjs - check registry.json on every pull request.
  *
  * Registration is a PR against registry.json, so this is what stands between a
  * contributor and being merged. It reports every problem in one pass rather
@@ -9,7 +9,7 @@
  *
  *   node scripts/validate-registry.mjs
  *
- * GITHUB_TOKEN is optional — without it the public-repository check is skipped
+ * GITHUB_TOKEN is optional - without it the public-repository check is skipped
  * rather than failing, since unauthenticated requests run out quickly.
  */
 
@@ -27,7 +27,7 @@ let registry;
 try {
   registry = JSON.parse(readFileSync(new URL("../registry.json", import.meta.url), "utf8"));
 } catch (e) {
-  console.error(`registry.json is not valid JSON — ${e.message}`);
+  console.error(`registry.json is not valid JSON - ${e.message}`);
   console.error("A trailing comma after the last entry is the usual cause.");
   process.exit(1);
 }
@@ -97,7 +97,7 @@ registry.forEach((entry, i) => {
     }
     toAdd.push({ slug: entry.slug || `entry #${i + 1}`, handles: entry.telegram });
     if (Array.isArray(entry.team) && entry.telegram.length !== entry.team.length) {
-      notes.push(`${where}: ${entry.team.length} GitHub handles but ${entry.telegram.length} Telegram usernames — everyone who wants group access needs one.`);
+      notes.push(`${where}: ${entry.team.length} GitHub handles but ${entry.telegram.length} Telegram usernames - everyone who wants group access needs one.`);
     }
   }
 
@@ -116,11 +116,11 @@ registry.forEach((entry, i) => {
   }
 
   if (entry.x_handle && /^@|x\.com|twitter\.com/i.test(entry.x_handle)) {
-    err(where, `x_handle should be the bare handle without "@" or a URL — got "${entry.x_handle}"`);
+    err(where, `x_handle should be the bare handle without "@" or a URL - got "${entry.x_handle}"`);
   }
 
   if (entry.demo_url && !/^https?:\/\//i.test(entry.demo_url)) {
-    err(where, `demo_url must start with http:// or https:// — got "${entry.demo_url}"`);
+    err(where, `demo_url must start with http:// or https:// - got "${entry.demo_url}"`);
   }
 
   const repo = parseRepo(entry.repo_url);
@@ -132,11 +132,11 @@ registry.forEach((entry, i) => {
 
   /* Nothing here enforces submission any more. Mainnet address, contracts and
      demo video live in the team's own strk20.json, and the hub derives whether
-     a project is submitted from what it can actually verify — so there is no
+     a project is submitted from what it can actually verify - so there is no
      second pull request to police. */
   for (const moved of ["starknet_address", "contracts", "demo_url", "demo_video", "status"]) {
     if (entry[moved] !== undefined) {
-      notes.push(`${where}: "${moved}" moved to strk20.json in your own repository — it is ignored here. See CONTRIBUTING.md.`);
+      notes.push(`${where}: "${moved}" moved to strk20.json in your own repository - it is ignored here. See CONTRIBUTING.md.`);
     }
   }
 });
@@ -155,18 +155,18 @@ if (repoChecks.length && TOKEN) {
         },
       });
       if (res.status === 404) {
-        err(where, `${owner}/${repo} is not reachable — it must be public (or the URL has a typo)`);
+        err(where, `${owner}/${repo} is not reachable - it must be public (or the URL has a typo)`);
       } else if (res.ok) {
         const meta = await res.json();
-        if (meta.private) err(where, `${owner}/${repo} is private — public repositories are required`);
-        if (!meta.license) notes.push(`${where}: ${owner}/${repo} has no license. Add one before submitting — it counts toward the open-source score.`);
+        if (meta.private) err(where, `${owner}/${repo} is private - public repositories are required`);
+        if (!meta.license) notes.push(`${where}: ${owner}/${repo} has no license. Add one before submitting - it counts toward the open-source score.`);
       }
     } catch (e) {
       notes.push(`${where}: could not check ${owner}/${repo} (${e.message})`);
     }
   }
 } else if (repoChecks.length) {
-  notes.push("No GITHUB_TOKEN — skipped the public-repository check.");
+  notes.push("No GITHUB_TOKEN - skipped the public-repository check.");
 }
 
 for (const n of notes) console.log(`note: ${n}`);
@@ -186,4 +186,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`registry.json is valid — ${registry.length} project${registry.length === 1 ? "" : "s"}.`);
+console.log(`registry.json is valid - ${registry.length} project${registry.length === 1 ? "" : "s"}.`);

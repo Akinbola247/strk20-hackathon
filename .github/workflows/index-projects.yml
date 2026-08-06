@@ -37,7 +37,7 @@ jobs:
         env:
           # Repo-scoped token: 1,000 requests/hour, against roughly 120 per run.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Without this the run still succeeds — it just silently produces no
+          # Without this the run still succeeds - it just silently produces no
           # summaries, which is exactly how it went unnoticed the first time.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/build-projects.mjs
@@ -47,7 +47,7 @@ jobs:
           git config user.name  "strk20-sprint-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add projects.json
-          # No push activity since the last tick is the common case — exit quietly
+          # No push activity since the last tick is the common case - exit quietly
           # rather than creating an empty commit every 30 minutes.
           if git diff --cached --quiet; then
             echo "no changes"
