@@ -2,7 +2,11 @@
 
 > A 17-day sprint to ship a real privacy application on Starknet mainnet. Apply by pull request, build in public alongside the other builders working on Starknet privacy.
 
-**August 14 - August 31, 2026.** $5,000 USD paid in STRK: **$2,500** for first, **$1,500** for second, **$1,000** for third.
+**August 14 - August 31, 2026.** $5,000 USD paid in STRK:
+
+- 🥇 **$2,500** for first
+- 🥈 **$1,500** for second
+- 🥉 **$1,000** for third
 
 Everyone works in their own public repository. Every push shows up on the hub at [strk20.starknet.io/hackathon](https://strk20.starknet.io/hackathon) while the sprint is running, so the rest of the field sees what you ship the day you ship it.
 
@@ -150,11 +154,9 @@ Your README should still cover what it does and why it needed privacy, how to ru
 
 If another team depends on something you published, that counts toward your integration and open-source scores. Building the piece everyone else reuses is a winning strategy here.
 
-| Place | Prize |
-|---|---|
-| 1st | $2,500 in STRK |
-| 2nd | $1,500 in STRK |
-| 3rd | $1,000 in STRK |
+- 🥇 **$2,500** in STRK
+- 🥈 **$1,500** in STRK
+- 🥉 **$1,000** in STRK
 
 Winners announced **September 4**.
 
