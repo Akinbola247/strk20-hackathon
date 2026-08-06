@@ -17,8 +17,10 @@
 - [ ] I added one object to `registry.json` and did not modify anyone else's entry
 - [ ] `slug` is lowercase, hyphenated, and not already taken
 - [ ] `repo_url` is public
-- [ ] `team` contains GitHub handles (not display names)
 - [ ] `telegram` has a bare username for everyone who needs access to the builders group
+
+<!-- No need to list teammates: builders are detected from the commit history.
+     Use the optional `team` field only if someone is missed. -->
 
 <!-- Nothing about mainnet, contracts, or a demo belongs here. Those live in a
      strk20.json in your own repository and we read them from there - see

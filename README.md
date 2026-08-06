@@ -42,7 +42,6 @@ This is the only pull request you open. Everything else - your pushes, your stac
   "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
   "category": "Consumer",
   "repo_url": "https://github.com/your-org/zk-mail",
-  "team": ["your-github-handle", "teammate-handle"],
   "telegram": ["your_telegram", "teammate_telegram"],
   "x_handle": "yourhandle",
   "inspired_by": "IDEA-07"
@@ -56,12 +55,12 @@ This is the only pull request you open. Everything else - your pushes, your stac
 | `one_liner` | yes | one sentence, roughly 120 characters |
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
-| `team` | yes | GitHub usernames |
 | `telegram` | yes | Telegram usernames, no `@`, one per person who needs group access |
+| `team` | no | GitHub usernames. Builders are detected from the commit history; add anyone that misses |
 | `x_handle` | no | without the `@` |
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md) |
 
-Nothing needs to be deployed to apply.
+Nothing needs to be deployed to apply. Builders appear on the hub automatically, taken from who commits to the repository.
 
 ## strk20.json
 

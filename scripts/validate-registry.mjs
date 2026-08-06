@@ -101,9 +101,11 @@ registry.forEach((entry, i) => {
     }
   }
 
-  if (!Array.isArray(entry.team) || entry.team.length === 0) {
-    err(where, '"team" must be a non-empty array of GitHub handles');
-  } else {
+  /* Optional: builders are detected from the commit history. The field is a
+     top-up for anyone detection misses, so an empty one is fine. */
+  if (entry.team !== undefined && !Array.isArray(entry.team)) {
+    err(where, '"team" must be an array of GitHub usernames, or left out entirely');
+  } else if (Array.isArray(entry.team)) {
     for (const h of entry.team) {
       if (typeof h !== "string" || /^https?:|@|\s|\//.test(h)) {
         err(where, `team entry "${h}" should be a bare GitHub handle, not a URL or @mention`);

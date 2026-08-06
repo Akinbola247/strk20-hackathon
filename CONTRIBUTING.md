@@ -31,7 +31,7 @@ Opening a pull request is an application, not a registration: we review it, and 
 - **`one_liner`** - one sentence, roughly 120 characters. What it does, not why it's exciting.
 - **`category`** - one of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
 - **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
-- **`team`** - bare GitHub handles, not URLs and not `@mentions`. Avatars and names on the hub come from these.
+- **`team`** - optional. Builders are detected from the commit history, so teammates appear on the hub as soon as they push. Add a username here only if detection misses someone: a different commit email, a co-author, or anyone who hasn't pushed yet.
 - **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person who needs access to the builders group. We use them for two things: checking whether you're already in the group, and adding you if your application holds up. They stay in this repository and are never published to the hub.
 - **`x_handle`** - optional, without the `@`. Used to credit you in sprint updates.
 - **`inspired_by`** - optional, an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.

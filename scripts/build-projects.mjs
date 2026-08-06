@@ -92,6 +92,63 @@ async function resolveUser(login) {
   return out;
 }
 
+/* ---------- builders ---------- */
+
+const SPRINT_START = "2026-08-14T00:00:00Z";
+
+/* Who actually wrote the code, taken from the commit history rather than from
+ * a list someone remembered to keep current. A teammate who joins in week two
+ * shows up the moment they push.
+ *
+ * Scoped to the sprint window: /contributors would return a repository's whole
+ * history, so an existing project would credit forty people who never entered.
+ * Before the sprint opens there is no window yet, so it falls back to recent
+ * commits and the entry can still show a face on day one.
+ *
+ * Avatars and names come straight off the commit payload, so this costs one
+ * request per project rather than one per person. */
+async function detectBuilders(owner, repo, entry) {
+  const seen = new Map();
+  const counts = new Map();
+
+  const collect = (commits) => {
+    for (const c of commits || []) {
+      const a = c.author;
+      /* Unlinked commit emails have no author object; bots are noise. */
+      if (!a?.login || a.type === "Bot" || /\[bot\]$/i.test(a.login)) continue;
+      counts.set(a.login, (counts.get(a.login) || 0) + 1);
+      if (!seen.has(a.login)) {
+        seen.set(a.login, {
+          login: a.login,
+          name: c.commit?.author?.name || a.login,
+          avatar_url: a.avatar_url,
+        });
+      }
+    }
+  };
+
+  const started = Date.now() >= new Date(SPRINT_START).getTime();
+  collect(await gh(`/repos/${owner}/${repo}/commits?per_page=100${started ? `&since=${SPRINT_START}` : ""}`));
+  if (!seen.size && started) {
+    /* Registered but nothing pushed inside the window yet. */
+    collect(await gh(`/repos/${owner}/${repo}/commits?per_page=30`));
+  }
+
+  /* Most commits first, so the row's three visible faces are the people
+     carrying the project. */
+  const detected = [...seen.values()].sort((a, b) => (counts.get(b.login) || 0) - (counts.get(a.login) || 0));
+
+  /* Anyone the team listed by hand and detection missed: a different commit
+     email, a co-author, someone who hasn't pushed yet. */
+  const declared = Array.isArray(entry.team) ? entry.team : [];
+  for (const login of declared) {
+    if (typeof login !== "string" || seen.has(login)) continue;
+    detected.push(await resolveUser(login));
+  }
+
+  return detected;
+}
+
 /* ---------- stack detection ---------- */
 
 /* Two passes. Dependencies are the strong signal - a package.json entry means
@@ -308,9 +365,10 @@ Good: "Added the useShieldedBalance hook and its tests." Bad: "Enhanced privacy 
 
 function validate(entry, index, seenSlugs) {
   const where = `registry.json[${index}]`;
-  /* starknet_address is intentionally absent: it is required to submit, not to
-     register, so a project with nothing deployed still renders on the hub. */
-  const required = ["slug", "name", "one_liner", "category", "repo_url", "team"];
+  /* starknet_address is absent because it is required to submit, not to
+     register. team is absent because builders are detected from the commit
+     history; the field only exists to top up whoever detection missed. */
+  const required = ["slug", "name", "one_liner", "category", "repo_url"];
   for (const key of required) {
     if (!entry[key] || (Array.isArray(entry[key]) && !entry[key].length)) {
       warn(`${where} is missing "${key}" - skipped`);
@@ -352,8 +410,7 @@ async function buildProject(entry, prev) {
     };
   }
 
-  const builders = [];
-  for (const login of entry.team) builders.push(await resolveUser(login));
+  const builders = await detectBuilders(owner, repo, entry);
 
   const demoUrl = await resolveDemo(entry, meta, owner, repo);
   const contracts = await resolveContracts(entry);
