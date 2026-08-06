@@ -56,7 +56,7 @@ registry.forEach((entry, i) => {
     return;
   }
 
-  for (const key of ["slug", "name", "one_liner", "category", "repo_url", "starknet_address"]) {
+  for (const key of ["slug", "name", "one_liner", "category", "repo_url"]) {
     if (!entry[key] || typeof entry[key] !== "string" || !entry[key].trim()) {
       err(where, `"${key}" is required`);
     }
@@ -110,9 +110,12 @@ registry.forEach((entry, i) => {
     repoChecks.push({ where, ...repo });
   }
 
-  /* Submission requirements, only enforced once a team says they are done. */
+  /* Submission requirements, only enforced once a team says they are done.
+     starknet_address is deliberately not required to register — asking for it
+     up front implies you need something deployed before you can enter. */
   if (entry.status === "finished") {
-    if (!entry.demo_url) err(where, 'status is "finished" but demo_url is empty — a public demo is required to submit');
+    if (!entry.demo_url) err(where, 'status is "finished" but demo_url is empty — a public demo anyone can open is required to submit');
+    if (!entry.starknet_address) err(where, 'status is "finished" but starknet_address is empty — it is how the three mainnet transactions are verified');
   }
 });
 

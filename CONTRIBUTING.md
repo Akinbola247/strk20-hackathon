@@ -13,7 +13,6 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
      "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
      "category": "Consumer",
      "repo_url": "https://github.com/your-org/zk-mail",
-     "starknet_address": "0x0123...",
      "team": ["your-github-handle"],
      "status": "building"
    }
@@ -31,7 +30,7 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
 - **`one_liner`** - one sentence, roughly 120 characters. What it does, not why it's exciting.
 - **`category`** - one of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
 - **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
-- **`starknet_address`** - the address your mainnet transactions come from. Eligibility is checked against exactly this address, so if you switch wallets mid-sprint, open a PR to update it.
+- **`starknet_address`** - optional at registration, required to submit. The address your mainnet transactions come from; eligibility is checked against exactly this one, so if you switch wallets mid-sprint, open a PR to update it. Leave it out until you have one - you do not need anything deployed to enter.
 - **`team`** - bare GitHub handles, not URLs and not `@mentions`. Avatars and names on the hub come from these.
 - **`x_handle`** - optional, without the `@`. Used to credit you in sprint updates.
 - **`inspired_by`** - optional, an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
@@ -63,12 +62,12 @@ Ideas are inspiration, not bounties - nothing on the list is funded, assigned, o
 
 ## Submitting a finished project
 
-Before **August 31, 23:59 UTC**, open a pull request changing your entry's `status` to `finished`. The check enforces that a demo URL is reachable at that point. Your README must cover what it does and why it needed privacy, how to run it locally, a link to your 3-minute demo video, and your mainnet contract addresses.
+Before **August 31, 23:59 UTC**, open a pull request changing your entry's `status` to `finished` and adding `starknet_address` if it isn't there yet. The check enforces both at that point. Your README must cover what it does and why it needed privacy, how to run it locally, a link to your 3-minute demo video, and your mainnet contract addresses.
 
 ## Guidelines
 
 - **Public only.** Your repository, your demo, and anything you link must resolve for someone who isn't logged in. Private repos can't be judged.
-- **Mainnet, actually running.** At least three mainnet transactions from the address in your entry, against the live pool. A prototype behind a login doesn't qualify.
+- **Mainnet, actually running.** To win, at least three mainnet transactions from the address in your entry, against the live pool. A prototype behind a login doesn't qualify. Nothing needs to be deployed to register.
 - **Accurate.** Describe what your project actually does. Be especially precise about what is and isn't private - overclaiming costs you on integration depth. The [Day 0 guide](docs/MAINNET-DAY-0.md) has the breakdown.
 - **License your repository.** It counts toward the open-source score, and other teams can't build on what they can't legally use.
 - **No secrets, ever.** Use placeholder values for keys, addresses, and endpoints in anything you commit. Never commit real private keys.

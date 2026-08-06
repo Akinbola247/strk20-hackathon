@@ -49,7 +49,7 @@ Registration stays open for the whole sprint. Registering on day 12 is fine; you
 
 Push to your repo and the hub reflects it within 30 minutes. Ship a demo and it appears on its own. Deploy a contract and it shows up with the right network beside it.
 
-Only two things ever need another pull request: **submitting** (flipping `status` to `finished` at the end), and **changing your Starknet address** if you switch wallets mid-sprint.
+Only two things ever need another pull request: **submitting** (flipping `status` to `finished`, and adding your `starknet_address` if you haven't yet), and **changing that address** if you switch wallets mid-sprint.
 
 ## Your registry entry
 
@@ -62,7 +62,6 @@ Only two things ever need another pull request: **submitting** (flipping `status
   "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
   "category": "Consumer",
   "repo_url": "https://github.com/your-org/zk-mail",
-  "starknet_address": "0x0123...",
   "team": ["your-github-handle", "teammate-handle"],
   "x_handle": "yourhandle",
   "inspired_by": "IDEA-07",
@@ -77,7 +76,7 @@ Only two things ever need another pull request: **submitting** (flipping `status
 | `one_liner` | yes | one sentence, roughly 120 characters |
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
-| `starknet_address` | yes | the address your mainnet transactions come from - used to verify eligibility |
+| `starknet_address` | to submit | the address your mainnet transactions come from. Add it whenever you have one - it is only needed to verify eligibility at the end. |
 | `team` | yes | bare GitHub handles. Avatars and names on the hub are resolved from these. |
 | `x_handle` | no | without the `@`. Used to credit you in sprint updates. |
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
@@ -94,13 +93,13 @@ Ideas are **not** exclusive. Several teams working from the same idea is fine an
 
 - Open to anyone. Individuals and teams, new projects or existing ones.
 - Your repository must be **public and open-source**, with a license.
-- Your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your registry entry.
+- To win, your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your entry. You do not need an address to register - add it when you have one.
 - A **public demo URL** anyone can open. Not a video, not a localhost screenshot.
 - One payout address per winning team.
 
 ## Submitting
 
-Before **August 31, 23:59 UTC**, open a second pull request changing your entry's `status` to `finished`. Your repository's README must contain:
+Before **August 31, 23:59 UTC**, open a second pull request changing your entry's `status` to `finished` and filling in `starknet_address` if you haven't already. Your repository's README must contain:
 
 - What it does and why it needed privacy.
 - How to run it locally.

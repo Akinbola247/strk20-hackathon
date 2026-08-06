@@ -286,7 +286,9 @@ Good: "Added the useShieldedBalance hook and its tests." Bad: "Enhanced privacy 
 
 function validate(entry, index, seenSlugs) {
   const where = `registry.json[${index}]`;
-  const required = ["slug", "name", "one_liner", "category", "repo_url", "starknet_address", "team"];
+  /* starknet_address is intentionally absent: it is required to submit, not to
+     register, so a project with nothing deployed still renders on the hub. */
+  const required = ["slug", "name", "one_liner", "category", "repo_url", "team"];
   for (const key of required) {
     if (!entry[key] || (Array.isArray(entry[key]) && !entry[key].length)) {
       warn(`${where} is missing "${key}" — skipped`);
