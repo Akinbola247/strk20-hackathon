@@ -5,14 +5,14 @@
     "one_liner": "Pool contracts, the TypeScript SDK, and the proving service in one monorepo.",
     "category": "Infra",
     "repo_url": "https://github.com/starkware-libs/starknet-privacy",
-    "demo_url": "",
+    "demo_url": "https://starkware-libs.github.io/starknet-privacy/",
     "demo_video": "",
     "x_handle": "",
     "inspired_by": "",
     "starknet_address": "",
     "contracts": [],
     "requirements": {
-      "demo": false,
+      "demo": true,
       "video": false,
       "address": false,
       "mainnet": false
@@ -29,9 +29,9 @@
     ],
     "head_sha": "eaae03cba3570537b05a92ff856f83cec3754a38",
     "readme_hash": "9120:# Starknet Privacy\n\nPrivacy pool protocol for Starknet.\n\n[![License: Apache2.0](https://img.shields.io/badge/License-Apache2.0-green.svg)](LICENSE)\n\nUsers submit private transfers through the SDK, whi",
-    "summary": "",
-    "description_long": "",
-    "latest_push": "Fixed partial withdrawal handling and invalid signature assertion.",
+    "summary": "Facilitate private transfers on Starknet using a privacy pool protocol.",
+    "description_long": "The project orchestrates private transfers by compiling user actions into a transaction that leverages a proving service for validity. It addresses the challenge of securely submitting these transactions to the Starknet blockchain while ensuring user anonymity through a discovery service that efficiently syncs encrypted wallet data.",
+    "latest_push": "Fixed signature validation for panicking account signatures.",
     "tooling": [
       {
         "label": "Cairo",
@@ -96,9 +96,9 @@
     ],
     "head_sha": "8cb94b89185ca57647ade1eb9e404e15935ea212",
     "readme_hash": "4419:<!-- logo -->\n<p align=\"center\">\n  <img width='300' src=\"https://user-images.githubusercontent.com/2848732/226624229-7f1e5f8b-c550-47d4-85b2-5c90aee22417.png\">\n</p>\n\n<!-- primary badges -->\n<p align=\"",
-    "summary": "",
-    "description_long": "",
-    "latest_push": "Fixed WebSocket handling by rejecting queued requests instead of hanging.",
+    "summary": "Provide a JavaScript library for STRK20 support using WalletAccountV6.",
+    "description_long": "This project implements a JavaScript library that enables developers to integrate STRK20 token support into their applications. It utilizes WalletAccountV6 as part of its architecture, making it challenging to ensure compatibility across various wallets while maintaining seamless operation. Users can install the library via npm and utilize its API for token interactions.",
+    "latest_push": "Fixed websocket to reject queued requests instead of hanging.",
     "tooling": [
       {
         "label": "get-starknet",
@@ -147,9 +147,9 @@
     ],
     "head_sha": "dc1f88170ad2d7c2733a463f61ecf91f6abdb0e5",
     "readme_hash": "3769:# Starknet-WalletAccount\n\n## Presentation :\n\nThis repo contains a DAPP to interact with the Starknet blockchain, using the new wallet API.\n\n**You can test this DAPP ; it's already deployed [here](http",
-    "summary": "",
-    "description_long": "",
-    "latest_push": "Added the WalletAccountV6 tab to the application.",
+    "summary": "Demonstrate wallet account integration with the Starknet blockchain using Wallet API.",
+    "description_long": "This project showcases a DAPP that interacts with the Starknet blockchain through the Wallet API, allowing users to manage accounts securely in their web browser. It addresses the challenge of handling wallet transactions by requiring a wallet signature for operations, while also enabling direct blockchain interactions through a specified provider. The application is built using Next.js and TypeScript, and includes a custom UI for selecting wallets installed in the browser.",
+    "latest_push": "Added the WalletAccountV6 tab and fixed version display issues.",
     "tooling": [
       {
         "label": "get-starknet",
@@ -214,9 +214,9 @@
     ],
     "head_sha": "bda26be09b44a99ca6174ec43c9146a447acdf41",
     "readme_hash": "12033:# Awesome STRK20 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)\n\n![Introducing STRK20](./assets/banner.png)\n\n> A curated list of resources, tools, and reference implementations for bui",
-    "summary": "",
-    "description_long": "",
-    "latest_push": "Added the awesome-strk20 curated resource hub and integrated STRK20 features.",
+    "summary": "Create a curated index for private applications on Starknet using STRK20.",
+    "description_long": "This project develops a curated list of resources for building applications on Starknet's STRK20 privacy pool, which supports shielded balances and private transactions for ERC-20 tokens. It addresses technical complexities related to integrating wallets, SDKs, and helper contracts necessary for implementing privacy features while ensuring secure, anonymous transactions using STARK proofs.",
+    "latest_push": "Added the STRK20 starter kit and a curated resource hub.",
     "tooling": [
       {
         "label": "Cairo",
@@ -285,9 +285,9 @@
     ],
     "head_sha": "187fe789dd4f5de14ccb0953abfdb49a26643664",
     "readme_hash": "2372:# Starknet Privacy Starter Kit\n\nA lean Next.js starter for building privacy dApps on Starknet with [STRK20](https://eprint.iacr.org/2026/474) via `WalletAccountV6` (starknet.js v10). Shield, unshield,",
-    "summary": "",
-    "description_long": "",
-    "latest_push": "Added the STRK20 icon as a favicon and excluded Braavos from the wallet picker.",
+    "summary": "Build privacy dApps on Starknet using Next.js with integrated wallet features.",
+    "description_long": "This project provides a Next.js starter kit for creating privacy-focused decentralized applications on Starknet. It includes features like wallet selection, token shielding, unshields, private transfers, and balance reads, all handled via the user's wallet without relying on a viewing key. The technical challenge involves configuring secure interactions with the Starknet blockchain using the STRK20 protocol and handling user input effectively.",
+    "latest_push": "Added the STRK20 icon as the favicon and excluded Braavos from the wallet picker.",
     "tooling": [
       {
         "label": "get-starknet",
