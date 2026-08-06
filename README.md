@@ -33,7 +33,7 @@ The group exists so people building privacy on Starknet can talk to each other a
 
 If you're already in the privacy builders group, this is a formality: open the PR and carry on. If we don't know you yet, tell us what you're building and why in the PR description. That's what we read.
 
-Applications stay open for the whole sprint. Applying on day 12 is fine; you just have less time.
+Applications stay open for the whole sprint. Applying on day 12 is fine.
 
 ## One pull request, then we track it
 
