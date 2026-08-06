@@ -64,8 +64,7 @@ Only two things ever need another pull request: **submitting** (flipping `status
   "repo_url": "https://github.com/your-org/zk-mail",
   "team": ["your-github-handle", "teammate-handle"],
   "x_handle": "yourhandle",
-  "inspired_by": "IDEA-07",
-  "status": "building"
+  "inspired_by": "IDEA-07"
 }
 ```
 
@@ -82,7 +81,7 @@ Only two things ever need another pull request: **submitting** (flipping `status
 | `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
 | `demo_url` | no | usually unnecessary - see the note below |
 | `contracts` | no | array of deployed addresses; the hub checks which network each is on |
-| `status` | yes | `building` while you work, `finished` when you submit |
+| `status` | to submit | leave it out while you build. Set it to `finished` in your submission PR. |
 
 > [!NOTE]
 > **You don't need a second pull request when your demo goes live.** The hub looks for a deployed site on every project automatically: GitHub Pages first, then the repository's **Website** field, then your latest deployment. Filling in the Website field on your repo page is the one-click way to be certain it's found. Set `demo_url` by hand only if your demo lives somewhere none of those point to.

@@ -13,8 +13,7 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
      "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
      "category": "Consumer",
      "repo_url": "https://github.com/your-org/zk-mail",
-     "team": ["your-github-handle"],
-     "status": "building"
+     "team": ["your-github-handle"]
    }
    ```
 3. Don't modify anyone else's entry. Append yours; leave the rest alone.
@@ -36,6 +35,7 @@ Thanks for building on the Starknet privacy pool. Everything here happens throug
 - **`inspired_by`** - optional, an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
 - **`contracts`** - optional array of deployed addresses. The hub checks each against mainnet and Sepolia and shows which network it's on.
 - **`demo_url`** - usually unnecessary. See below.
+- **`status`** - leave it out. Everything defaults to building; you set `"finished"` in your submission PR.
 
 ### Your demo is picked up automatically
 

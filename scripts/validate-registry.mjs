@@ -77,6 +77,8 @@ registry.forEach((entry, i) => {
     err(where, `category "${entry.category}" must be one of: ${CATEGORIES.join(", ")}`);
   }
 
+  /* Optional: at registration the only valid value is "building", so requiring
+     it would just be boilerplate. Absent means building. */
   if (entry.status && !STATUSES.includes(entry.status)) {
     err(where, `status "${entry.status}" must be "building" or "finished"`);
   }
