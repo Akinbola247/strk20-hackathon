@@ -76,4 +76,4 @@ Poker, fog-of-war strategy, sealed-bid auctions. Anything where the game is ruin
 
 ---
 
-*Maxime's RFPs, Harsh's ideas, and community suggestions from X merge into this file before August 14.*
+*More ideas land here before August 14, including the published [Request for Startups](https://strk20.starknet.io/rfp).*
