@@ -1,34 +1,47 @@
 # Private Sprint
 
-Seventeen days to ship a real privacy application on Starknet mainnet.
+> A 17-day sprint to ship a real privacy application on Starknet mainnet. Register by pull request, build in public, and watch the whole field ship alongside you.
 
-**August 14 – August 31, 2026.** $5,000 USD paid in STRK, split across the top three projects.
+**August 14 - August 31, 2026.** $5,000 USD paid in STRK, split across the top three projects.
 
-Everyone builds in the open. You work in your own public repository, and every push shows up on the hub at **[strk20.starknet.io/hackathon](https://strk20.starknet.io/hackathon)** while the sprint is running — so the rest of the field sees what you ship the day you ship it.
+Everyone works in their own public repository. Every push shows up on the hub at [strk20.starknet.io/hackathon](https://strk20.starknet.io/hackathon) while the sprint is running, so the rest of the field sees what you ship the day you ship it.
 
----
+## Contents
+
+- [How to enter](#how-to-enter)
+- [Your registry entry](#your-registry-entry)
+- [Rules](#rules)
+- [Submitting](#submitting)
+- [Judging](#judging)
+- [Timeline](#timeline)
+- [Ideas](#ideas)
+- [Resources](#resources)
+- [After the sprint](#after-the-sprint)
+- [Contributing](#contributing)
 
 ## How to enter
 
-1. **Fork this repository.**
-2. **Add your project to [`registry.json`](registry.json)** — one object, appended to the array. See the schema below.
-3. **Open a pull request.** A check validates your entry automatically and comments if anything is off — slug already taken, repository not public, a field in the wrong shape. Once it's green and merged you're registered, and your project appears on the hub within 30 minutes.
-4. **Join the Telegram group** — the link is in the merged PR comment, and the STRK20 team is in there every day of the sprint.
+*Registration is a pull request against `registry.json`. It takes about two minutes.*
 
-**Start building before your PR is merged.** Registration is a formality, not a gate — nothing about it unlocks the stack, and review is usually same-day. Open the PR, then go write code. Merging it only decides when your project appears on the hub.
+1. Fork this repository and add one object to [`registry.json`](registry.json).
+2. Open a pull request. A check validates your entry and reports anything off - a slug already taken, a repository that isn't public, a field in the wrong shape.
+3. Join the Telegram group. The link is in the comment on your merged PR.
+
+**Start building before your PR is merged.** Registration is a formality, not a gate - nothing about it unlocks the stack, and review is usually same-day. Merging only decides when your project appears on the hub.
 
 Registration stays open for the whole sprint. Registering on day 12 is fine; you just have less time.
 
-### Your registry entry
+## Your registry entry
+
+*One object per project. Field-by-field guidance is in [CONTRIBUTING.md](./CONTRIBUTING.md).*
 
 ```json
 {
-  "slug": "zkmail",
+  "slug": "zk-mail",
   "name": "ZK Mail",
   "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
   "category": "Consumer",
-  "repo_url": "https://github.com/your-org/zkmail",
-  "demo_url": "",
+  "repo_url": "https://github.com/your-org/zk-mail",
   "starknet_address": "0x0123...",
   "team": ["your-github-handle", "teammate-handle"],
   "x_handle": "yourhandle",
@@ -41,31 +54,33 @@ Registration stays open for the whole sprint. Registering on day 12 is fine; you
 |---|---|---|
 | `slug` | yes | lowercase, hyphenated, unique across the registry |
 | `name` | yes | display name on the hub |
-| `one_liner` | yes | one sentence, ~120 characters. This is what people read on the card. |
+| `one_liner` | yes | one sentence, roughly 120 characters |
 | `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
-| `demo_url` | no | add it when your demo is live; required to submit |
-| `starknet_address` | yes | the address your mainnet transactions come from — used to verify eligibility |
-| `team` | yes | GitHub handles. Avatars and names on the hub are resolved from these. |
+| `starknet_address` | yes | the address your mainnet transactions come from - used to verify eligibility |
+| `team` | yes | bare GitHub handles. Avatars and names on the hub are resolved from these. |
 | `x_handle` | no | without the `@`. Used to credit you in sprint updates. |
-| `inspired_by` | no | an ID from [`IDEAS.md`](IDEAS.md), if you picked one up |
+| `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md), if you picked one up |
+| `demo_url` | no | usually unnecessary - see the note below |
+| `contracts` | no | array of deployed addresses; the hub checks which network each is on |
 | `status` | yes | `building` while you work, `finished` when you submit |
 
-Ideas are **not** exclusive. Several teams working from the same idea is fine and expected — the hub shows how many, so you can see what's crowded.
+> [!NOTE]
+> **You don't need a second pull request when your demo goes live.** The hub looks for a deployed site on every project automatically: GitHub Pages first, then the repository's **Website** field, then your latest deployment. Filling in the Website field on your repo page is the one-click way to be certain it's found. Set `demo_url` by hand only if your demo lives somewhere none of those point to.
 
----
+Ideas are **not** exclusive. Several teams working from the same idea is fine and expected - the hub shows how many, so you can see what's crowded.
 
 ## Rules
 
 - Open to anyone. Individuals and teams, new projects or existing ones.
 - Your repository must be **public and open-source**, with a license.
-- Your app must run on **Starknet mainnet** against the live STRK20 pool. At least **three mainnet transactions** from the address in your registry entry.
+- Your app must run on **Starknet mainnet** against the live STRK20 pool, with at least **three mainnet transactions** from the address in your registry entry.
 - A **public demo URL** anyone can open. Not a video, not a localhost screenshot.
 - One payout address per winning team.
 
-## How to submit
+## Submitting
 
-Before **August 31, 23:59 UTC**, open a second pull request that changes your entry's `status` to `finished` and fills in `demo_url`. Your repository's README must contain:
+Before **August 31, 23:59 UTC**, open a second pull request changing your entry's `status` to `finished`. Your repository's README must contain:
 
 - What it does and why it needed privacy.
 - How to run it locally.
@@ -74,20 +89,18 @@ Before **August 31, 23:59 UTC**, open a second pull request that changes your en
 
 ## Judging
 
-A named panel scores every submitted project. Nothing on the hub ranks projects by merit — the hub orders modules by recent activity so you can see who is shipping, and the panel decides winners after submissions close.
+*A named panel scores every submitted project after submissions close. Nothing on the hub ranks projects by merit - it orders by most recent push, so you can see who is shipping.*
 
 | Weight | Criterion |
 |---|---|
-| 30% | **STRK20 integration depth** — how far into the stack you went: shielded balances, private transfers, anonymizer contracts, the SDK |
-| 30% | **Working mainnet product** — it runs, on mainnet, for a real user. Not a prototype behind a login. |
-| 25% | **Innovation** — something the ecosystem doesn't have yet, or a materially better take on something it does |
-| 15% | **Documentation & open-source quality** — a README someone can follow, code someone can build on, a license |
+| 30% | **STRK20 integration depth** - how far into the stack you went: shielded balances, private transfers, anonymizer contracts, the SDK |
+| 30% | **Working mainnet product** - it runs, on mainnet, for a real user. Not a prototype behind a login. |
+| 25% | **Innovation** - something the ecosystem doesn't have yet, or a materially better take on something it does |
+| 15% | **Documentation & open-source quality** - a README someone can follow, code someone can build on, a license |
 
 If another team depends on something you published, that counts toward your integration and open-source scores. Building the piece everyone else reuses is a winning strategy here.
 
 Winners announced **September 4**.
-
----
 
 ## Timeline
 
@@ -97,16 +110,27 @@ Winners announced **September 4**.
 | August 31, 23:59 UTC | Submissions close |
 | September 4 | Winners announced |
 
+## Ideas
+
+*Inspiration, not bounties. Nothing on the list is funded, assigned, or reserved.*
+
+[IDEAS.md](IDEAS.md) holds 18 starting points across consumer apps, DeFi, tooling, infrastructure, compliance, and games. Build one, build a variation, or build something nobody has thought of. Community additions are welcome by pull request.
+
 ## Resources
 
-- **[Day 0: your first mainnet transaction](docs/MAINNET-DAY-0.md)** — start here. Zero to a shielded mainnet balance.
-- **[Ideas](IDEAS.md)** — inspiration, not bounties.
-- **[Privacy SDK](https://github.com/starkware-libs/starknet-privacy)** — the monorepo. Start here.
-<!-- TODO: re-add the starter kit link once the repo is public. It currently lives at
-     Akashneelesh/starknet-privacy-starter-kit and returns 404 to anyone outside. -->
-- **[STRK20 by example](https://strk20-by-example.org/what-is-strk20)** — documentation.
-- **[Build on STRK20](https://strk20.starknet.io/build)** — pick your integration route.
+- [Day 0: your first mainnet transaction](docs/MAINNET-DAY-0.md) - Zero to a shielded mainnet balance, with every value verified against the live network. Start here.
+- [Awesome STRK20](https://github.com/Akashneelesh/awesome-strk20) - Curated list of the SDKs, helper contracts, proof-of-concept apps, and guides for the pool.
+- [STRK20 starter kit](https://github.com/Akashneelesh/strk20-starter-kit) - A lean Next.js starter: wallet picker, shield/unshield/private transfer, shielded balances, and a deployable `privacy_invoke` helper.
+- [Privacy SDK](https://github.com/starkware-libs/starknet-privacy) - The monorepo: pool contracts, the TypeScript SDK, and the proving service.
+- [STRK20 by example](https://strk20-by-example.org/what-is-strk20) - Documentation for the pool, the Privacy Wallet API, and anonymizer contracts.
+- [Build on STRK20](https://strk20.starknet.io/build) - Pick your integration route: private dapp, privacy wallet, or your own prover.
+
+The STRK20 team is in the Telegram group every day of the sprint for architecture questions, integration help, and infrastructure blockers.
 
 ## After the sprint
 
-Strong projects get continued support: technical feedback from the StarkWare privacy team, ecosystem introductions, and a path into the Starknet Foundation Grants Program. The sprint is where we find people worth backing — winning isn't the only way to come out of it with something.
+Strong projects get continued support: technical feedback from the StarkWare privacy team, ecosystem introductions, and a path into the Starknet Foundation Grants Program. The sprint is where we find people worth backing - winning isn't the only way to come out of it with something.
+
+## Contributing
+
+Registering a project, submitting a finished one, and adding an idea all go through pull requests - see [CONTRIBUTING.md](./CONTRIBUTING.md). Please keep entries public, accurate, and link-checked.

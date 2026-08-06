@@ -166,6 +166,36 @@ async function detectTooling(owner, repo, readme) {
   return found;
 }
 
+/* ---------- deployed demos ---------- */
+
+/* Teams shouldn't have to open a second pull request the day their site goes
+ * live, so the demo is discovered rather than declared. Ordered by how much
+ * the signal means: an explicit value is a deliberate choice and always wins,
+ * Pages and the Website field are the team saying "this is the site", and a
+ * deployment URL is the host saying it. Stops at the first hit, so the extra
+ * requests only happen for projects that haven't shipped one yet. */
+async function resolveDemo(entry, meta, owner, repo) {
+  if (entry.demo_url) return entry.demo_url;
+
+  /* Free — the repository metadata is already in hand. */
+  if (meta?.homepage && /^https?:\/\//i.test(meta.homepage)) return meta.homepage;
+
+  if (meta?.has_pages) {
+    const pages = await gh(`/repos/${owner}/${repo}/pages`);
+    if (pages?.html_url) return pages.html_url;
+  }
+
+  const deployments = await gh(`/repos/${owner}/${repo}/deployments?per_page=1`);
+  const id = deployments?.[0]?.id;
+  if (id) {
+    const statuses = await gh(`/repos/${owner}/${repo}/deployments/${id}/statuses?per_page=5`);
+    const live = (statuses || []).find((st) => st.state === "success" && st.environment_url);
+    if (live) return live.environment_url;
+  }
+
+  return "";
+}
+
 /* ---------- deployed contracts ---------- */
 
 /* Which network a declared contract actually lives on, asked of the chains
@@ -291,7 +321,7 @@ async function buildProject(entry, prev) {
     one_liner: entry.one_liner,
     category: entry.category,
     repo_url: meta?.html_url || entry.repo_url,
-    demo_url: entry.demo_url || "",
+    demo_url: await resolveDemo(entry, meta, owner, repo),
     x_handle: entry.x_handle || "",
     inspired_by: entry.inspired_by || "",
     status: entry.status === "finished" ? "finished" : "building",
