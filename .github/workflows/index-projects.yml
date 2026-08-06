@@ -37,6 +37,9 @@ jobs:
         env:
           # Repo-scoped token: 1,000 requests/hour, against roughly 120 per run.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Without this the run still succeeds — it just silently produces no
+          # summaries, which is exactly how it went unnoticed the first time.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node scripts/build-projects.mjs
 
       - name: Commit if changed
