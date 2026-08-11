@@ -19,7 +19,7 @@ Opening a pull request is an application, not a registration: we review it, and 
 
 **Start building before it's merged.** Registration doesn't unlock anything - merging only decides when your project appears on the hub.
 
-**This is the only pull request you need until you submit.** Your pushes, what changed in them, lines added and removed, your project description, the stack you're using, your deployed contracts and their network, your demo, and your team's avatars are all read from your repository and refreshed every 30 minutes. You never open a PR to report progress.
+**This is the only pull request you open.** Your pushes, the lines they changed, your description, your stack, your contracts and their network, your demo and your builders are all read from your repository every 30 minutes. There is no pull request for reporting progress.
 
 ### Fields
 
@@ -44,7 +44,7 @@ Everything you control goes in a `strk20.json` at the root of your own repo, and
 
 ```json
 {
-  "starknet_address": "0x0123...",
+  "transactions": ["0x07c0...", "0x04b2...", "0x0919..."],
   "contracts": ["0x0abc..."],
   "demo_video": "https://youtu.be/...",
   "demo_url": "https://your-demo.example"
@@ -56,7 +56,7 @@ Everything you control goes in a `strk20.json` at the root of your own repo, and
 - **`demo_video`** - your 3-minute demo video.
 - **`demo_url`** - only if your demo isn't found automatically. See below.
 
-Every field is optional, and none of them gates anything. Deployed a contract? Paste the address in. Recorded your video? Add the link. Switched wallets? Change the address.
+Every field is optional, and none of them gates anything. Deployed a contract? Paste the address in. Recorded your video? Add the link. Made your mainnet calls? Paste the hashes.
 
 It does matter that they end up there before the deadline: they're how we know your app is really on mainnet and how judges reach your demo. A project with none of them still appears on the hub - it just can't be scored. The hub shows what's still missing, so it isn't a surprise on the last day.
 
@@ -85,7 +85,7 @@ Ideas are inspiration, not bounties - nothing on the list is funded, assigned, o
 
 There is nothing to submit, and no second pull request. Whatever your repository shows at **August 31, 23:59 UTC** is your entry.
 
-A project counts as submitted once four things are true, each checked automatically and shown on the hub so you can see what's still missing:
+A project counts as submitted once three things are true, each checked automatically and shown on the hub so you can see what's still missing:
 
 - A live demo anyone can open.
 - A `demo_video` in your `strk20.json`.
@@ -96,7 +96,7 @@ Your README should still cover what it does and why it needed privacy, how to ru
 ## Guidelines
 
 - **Public only.** Your repository, your demo, and anything you link must resolve for someone who isn't logged in. Private repos can't be judged.
-- **Mainnet, actually running.** To win, at least three mainnet transactions from the address in your entry, against the live pool. A prototype behind a login doesn't qualify. Nothing needs to be deployed to register.
+- **Mainnet, actually running.** To win, at least three mainnet transactions against the live pool, listed by hash in your `strk20.json`. A prototype behind a login doesn't qualify. Nothing needs to be deployed to register.
 - **Accurate.** Describe what your project actually does. Be especially precise about what is and isn't private - overclaiming costs you on integration depth. The [Day 0 guide](docs/MAINNET-DAY-0.md) has the breakdown.
 - **License your repository.** It counts toward the open-source score, and other teams can't build on what they can't legally use.
 - **No secrets, ever.** Use placeholder values for keys, addresses, and endpoints in anything you commit. Never commit real private keys.

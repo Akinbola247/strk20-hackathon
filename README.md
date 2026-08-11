@@ -1,6 +1,6 @@
 # Private Sprint
 
-> A 17-day sprint to ship a real privacy application on Starknet mainnet.
+> An 18-day sprint to ship a real privacy application on Starknet mainnet.
 
 **August 14 - August 31, 2026.** $5,000 USD paid in STRK:
 
@@ -26,7 +26,7 @@ You build in your own public repository. Your progress appears on the hub at [st
 ## How to apply
 
 1. Fork this repository and add one object to [`registry.json`](registry.json).
-2. Open a pull request describing what you're building.
+2. Open a pull request saying what you're building.
 3. Once merged, you're in the builders group and your project appears on the hub.
 
 Applications are reviewed by the STRK20 team and stay open for the whole sprint.

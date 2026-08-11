@@ -1,6 +1,6 @@
 # Day 0 - your first mainnet transaction
 
-The sprint is mainnet-only. Prizes require **three real transactions** from the address in your registry entry, so the first thing to do - before you write any code - is prove you can reach the pool on mainnet. Budget an hour. If you're still stuck after that, post in the Telegram group; getting you unblocked is what the team is there for.
+The sprint is mainnet-only. Prizes require **three real transactions** against the pool, listed by hash in your `strk20.json`, so the first thing to do - before you write any code - is prove you can reach the pool on mainnet. Budget an hour. If you're still stuck after that, post in the Telegram group; getting you unblocked is what the team is there for.
 
 > **This is real money on a real network.** Start with an amount you would not mind losing. Nothing about the sprint requires large sums - three transactions of a few STRK each satisfy the eligibility rule.
 
@@ -12,7 +12,7 @@ The sprint is mainnet-only. Prizes require **three real transactions** from the 
 |---|---|
 | A Starknet wallet | Ready (formerly Argent) or Braavos, switched to **Mainnet** |
 | STRK for gas and for shielding | From a centralized exchange that supports Starknet withdrawals, or bridged from Ethereum |
-| The account you shield from | Goes in `strk20.json` in your own repository. Eligibility is checked against exactly this account, so keep it current if you switch wallets. |
+| Three mainnet transaction hashes | Go in `strk20.json` in your own repository. Each is checked on-chain: it must exist, have succeeded, and carry a STRK20 pool event. |
 
 ## Verified mainnet values
 
@@ -83,7 +83,7 @@ Open your address on [Voyager](https://voyager.online) and look for the pool int
 
 **One thing that will confuse you:** private transactions are submitted by **rotating shared relayers**, not by your wallet. The sender address on the transaction will be a relayer with a nonce in the hundreds of thousands, and your address appears nowhere in the calldata or signature. That's the system working - sender-level identity privacy holds.
 
-This is why eligibility is verified against the `user_addr` recorded in the pool's own `Deposit` event rather than against the transaction sender. Register the address you actually shield from.
+This is why eligibility is verified against the `user_addr` recorded in the pool's own `Deposit` event rather than against the transaction sender. List the hashes of calls you actually made.
 
 ---
 

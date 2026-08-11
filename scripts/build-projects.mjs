@@ -11,7 +11,7 @@
  *
  * Everything is cached on the repository's head SHA. A project that hasn't
  * pushed since the last run costs exactly one API call and no tokens, which is
- * what makes a 30-minute cron affordable across a 17-day sprint.
+ * what makes a 30-minute cron affordable across an 18-day sprint.
  *
  * No dependencies - Node 20's built-in fetch only.
  *
