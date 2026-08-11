@@ -7,36 +7,36 @@ Opening a pull request is an application, not a registration: we review it, and 
 ## Applying
 
 1. Fork the repo and edit `registry.json`.
-2. Append one object to the array, keeping the existing format:
+2. Append one object to the array. Two fields is a complete entry:
    ```json
    {
-     "slug": "zk-mail",
-     "name": "ZK Mail",
-     "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
-     "category": "Consumer",
      "repo_url": "https://github.com/your-org/zk-mail",
-     "team": ["your-github-handle"]
+     "telegram": ["your_telegram"]
    }
    ```
 3. Don't modify anyone else's entry. Append yours; leave the rest alone.
 4. Open the pull request. A check runs automatically and reports every problem at once.
 
-**Tell us what you're building in the PR description.** The automated check only looks at the shape of your entry; a human reads the rest, and that's what decides whether we add you to the group. If you're already in the privacy builders group, this is a formality.
+**Start building before it's merged.** Registration doesn't unlock anything - merging only decides when your project appears on the hub.
 
 **This is the only pull request you need until you submit.** Your pushes, what changed in them, lines added and removed, your project description, the stack you're using, your deployed contracts and their network, your demo, and your team's avatars are all read from your repository and refreshed every 30 minutes. You never open a PR to report progress.
 
 ### Fields
 
-- **`slug`** - lowercase and hyphenated, unique across the registry. This is your project's id on the hub.
-- **`one_liner`** - one sentence, roughly 120 characters. What it does, not why it's exciting.
-- **`category`** - one of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
-- **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
-- **`team`** - optional. Builders are detected from the commit history, so teammates appear on the hub as soon as they push. Add a username here only if detection misses someone: a different commit email, a co-author, or anyone who hasn't pushed yet.
-- **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person who needs access to the builders group. We use them for two things: checking whether you're already in the group, and adding you if your application holds up. They stay in this repository and are never published to the hub.
-- **`x_handle`** - optional, without the `@`. Used to credit you in sprint updates.
-- **`inspired_by`** - optional, an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
+Two are required:
 
-That's everything. Nothing about mainnet, contracts, or demos belongs in this file - you don't need anything deployed to register, and the rest lives in your own repository.
+- **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
+- **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person who needs access to the builders group. We use them to check whether you're already in the group, and to add you if your application holds up.
+
+The rest are optional, and only worth setting if the derived value is wrong:
+
+- **`name`** - defaults to the repository name.
+- **`one_liner`** - defaults to the repository description.
+- **`slug`** - defaults to the repository name, lowercased and hyphenated. Must be unique.
+- **`category`** - defaults to `Other`. One of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
+- **`team`** - builders are detected from the commit history. Add a username here only if detection misses someone: a different commit email, a co-author, or anyone who hasn't pushed yet.
+- **`x_handle`** - without the `@`. Used to credit you in sprint updates.
+- **`inspired_by`** - an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
 
 ## strk20.json, in your repository
 

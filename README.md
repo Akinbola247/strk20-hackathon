@@ -35,30 +35,31 @@ This is the only pull request you open. Everything else - your pushes, your stac
 
 ## Your registry entry
 
+Two fields. Everything else is read from the repository itself.
+
 ```json
 {
-  "slug": "zk-mail",
-  "name": "ZK Mail",
-  "one_liner": "Encrypted mail with shielded STRK20 payments attached to every message.",
-  "category": "Consumer",
   "repo_url": "https://github.com/your-org/zk-mail",
-  "telegram": ["your_telegram", "teammate_telegram"],
-  "x_handle": "yourhandle",
-  "inspired_by": "IDEA-07"
+  "telegram": ["your_telegram", "teammate_telegram"]
 }
 ```
 
 | Field | Required | Notes |
 |---|---|---|
-| `slug` | yes | lowercase, hyphenated, unique |
-| `name` | yes | display name on the hub |
-| `one_liner` | yes | one sentence, roughly 120 characters |
-| `category` | yes | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, or `Other` |
 | `repo_url` | yes | your public GitHub repository |
 | `telegram` | yes | Telegram usernames, no `@`, one per person who needs group access |
-| `team` | no | GitHub usernames. Builders are detected from the commit history; add anyone that misses |
-| `x_handle` | no | without the `@` |
-| `inspired_by` | no | an ID from [IDEAS.md](IDEAS.md) |
+
+Optional, only if the derived value is wrong:
+
+| Field | Derived from | |
+|---|---|---|
+| `name` | the repository name | |
+| `one_liner` | the repository description | |
+| `slug` | the repository name, lowercased | must be unique |
+| `category` | defaults to `Other` | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other` |
+| `team` | commit history | GitHub usernames, for anyone detection misses |
+| `x_handle` | - | without the `@` |
+| `inspired_by` | - | an ID from [IDEAS.md](IDEAS.md) |
 
 Nothing needs to be deployed to apply. Builders appear on the hub automatically, taken from who commits to the repository.
 

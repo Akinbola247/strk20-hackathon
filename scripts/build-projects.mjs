@@ -406,22 +406,25 @@ Good: "Added the useShieldedBalance hook and its tests." Bad: "Enhanced privacy 
 
 function validate(entry, index, seenSlugs) {
   const where = `registry.json[${index}]`;
-  /* team is absent because builders are detected from the commit history; the
-     field only exists to top up whoever detection missed. Proof of mainnet
-     activity lives in strk20.json, not here. */
-  const required = ["slug", "name", "one_liner", "category", "repo_url"];
+  /* Only the two things that cannot be read from the repository itself. The
+     name, the one-liner, the category and the slug are all derived below and
+     the entry can override any of them. */
+  const required = ["repo_url"];
   for (const key of required) {
     if (!entry[key] || (Array.isArray(entry[key]) && !entry[key].length)) {
       warn(`${where} is missing "${key}" - skipped`);
       return false;
     }
   }
-  if (seenSlugs.has(entry.slug)) { warn(`${where} duplicate slug "${entry.slug}" - skipped`); return false; }
-  if (!parseRepo(entry.repo_url)) {
+  const repo = parseRepo(entry.repo_url);
+  if (!repo) {
     warn(`${where} repo_url is not a GitHub URL: ${entry.repo_url} - skipped`);
     return false;
   }
-  if (!CATEGORIES.includes(entry.category)) {
+  /* Derived from the repository when the entry does not say otherwise. */
+  entry.slug = entry.slug || repo.repo.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (seenSlugs.has(entry.slug)) { warn(`${where} duplicate slug "${entry.slug}" - skipped`); return false; }
+  if (entry.category && !CATEGORIES.includes(entry.category)) {
     warn(`${where} category "${entry.category}" is not one of ${CATEGORIES.join(", ")} - kept as Other`);
     entry.category = "Other";
   }
@@ -473,9 +476,11 @@ async function buildProject(entry, prev) {
 
   const base = {
     slug: entry.slug,
-    name: entry.name,
-    one_liner: entry.one_liner,
-    category: entry.category,
+    /* The repository already carries a name and a description; asking for them
+       again is a form to fill in for no gain. */
+    name: entry.name || meta?.name || entry.slug,
+    one_liner: entry.one_liner || meta?.description || "",
+    category: entry.category || "Other",
     repo_url: meta?.html_url || entry.repo_url,
     demo_url: demoUrl,
     demo_video: entry.demo_video || "",

@@ -50,27 +50,29 @@ const toAdd = [];
 registry.forEach((entry, i) => {
   /* Always carry the index: two entries with the same slug is itself an error,
      and without it both sets of messages look like they describe one entry. */
-  const where = entry?.slug ? `entry #${i + 1} "${entry.slug}"` : `entry #${i + 1}`;
+  const where = entry?.slug ? `entry #${i + 1} "${entry.slug}"` : (entry?.repo_url ? `entry #${i + 1} (${entry.repo_url})` : `entry #${i + 1}`);
 
   if (typeof entry !== "object" || entry === null) {
     err(where, "is not an object");
     return;
   }
 
-  for (const key of ["slug", "name", "one_liner", "category", "repo_url"]) {
-    if (!entry[key] || typeof entry[key] !== "string" || !entry[key].trim()) {
-      err(where, `"${key}" is required`);
-    }
+  /* Only two things cannot be read from the repository. Everything else is
+     derived, and the entry may override it. */
+  if (!entry.repo_url || typeof entry.repo_url !== "string" || !entry.repo_url.trim()) {
+    err(where, '"repo_url" is required');
   }
 
-  if (entry.slug) {
-    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.slug)) {
-      err(where, `slug "${entry.slug}" must be lowercase and hyphenated, e.g. "zk-mail"`);
-    }
-    if (seen.has(entry.slug)) {
-      err(where, `slug "${entry.slug}" is already used by entry #${seen.get(entry.slug) + 1}`);
+  const parsed = parseRepo(entry.repo_url);
+  const slug = entry.slug || (parsed ? parsed.repo.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") : "");
+  if (entry.slug && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(entry.slug)) {
+    err(where, `slug "${entry.slug}" must be lowercase and hyphenated, e.g. "zk-mail"`);
+  }
+  if (slug) {
+    if (seen.has(slug)) {
+      err(where, `slug "${slug}" is already used by entry #${seen.get(slug) + 1}`);
     } else {
-      seen.set(entry.slug, i);
+      seen.set(slug, i);
     }
   }
 
