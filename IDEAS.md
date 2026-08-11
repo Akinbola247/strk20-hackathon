@@ -1,8 +1,8 @@
 # Ideas
 
-**Inspiration, not bounties.** Nothing here is funded, assigned, or reserved. The prize is top-three only, judged on the rubric in the [README](README.md). Build one of these, build a variation, or build something nobody has thought of. The last option has won more hackathons than this list ever will.
+Everything on this page is in scope for the sprint. So is anything that isn't on it - build one of these, build a variation, or build something nobody here has thought of.
 
-Ideas are **not exclusive**. Several teams working the same idea is fine; the hub shows how many, so you can see what's crowded before you commit. Reference an idea with `"inspired_by": "IDEA-07"` in your registry entry.
+Ideas are not exclusive. Several teams can build the same one, and the hub shows how many are, so you can see what's crowded before you commit. Reference an idea with `"inspired_by": "IDEA-07"` in your registry entry.
 
 > [!IMPORTANT]
 > Some of these depend on infrastructure that is **not shipped yet**, marked with a warning below. Sub-accounts and confidential compute are in progress, not available today. If one of those is central to your idea, ask in the group before you start so you know exactly what exists. A team that discovers the dependency in week two has lost the sprint.
@@ -16,7 +16,6 @@ Ideas are **not exclusive**. Several teams working the same idea is fine; the hu
 - [Capital formation](#capital-formation)
 - [Infrastructure](#infrastructure)
 - [Governance and treasury](#governance-and-treasury)
-- [Beyond privacy](#beyond-privacy)
 
 ---
 
@@ -139,22 +138,6 @@ Confidential DAO votes with verifiable results, either secret until close or per
 **IDEA-28 · Private treasury operations**
 Swaps, yield, grants, payroll, OTC and LP positions from one treasury with configurable permissions: a manager can deploy a capped amount into whitelisted protocols, a trader can trade but not withdraw, members can verify solvency without seeing every transaction.
 
-## Beyond privacy
-
-Gaps in the Starknet ecosystem that are not privacy-specific. Privacy is welcome here but not required.
-
-**IDEA-29 · Fixed-rate borrowing**
-Fixed-rate lending and borrowing does not exist on Starknet. It exists nearly everywhere else.
-
-**IDEA-30 · Consumer-scale prediction market**
-Starknet has no broadly accessible prediction market.
-
-**IDEA-31 · Collectibles and gacha trading**
-Collectibles, trading, mystery packs, secondary markets. A consumer vertical that is not DeFi.
-
-**IDEA-32 · Spot RWA trading**
-Tokenised stocks, ETFs and commodities, traded spot.
-
 ---
 
-**Add your own.** Open a PR against this file, take the next free ID, and keep the existing format. Community ideas are welcome.
+**Add your own.** Open a pull request against this file, take the next free ID, and keep the existing format.

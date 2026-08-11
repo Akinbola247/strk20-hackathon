@@ -138,7 +138,7 @@ Winners announced **September 4**.
 
 ## Ideas
 
-[IDEAS.md](IDEAS.md) holds the 12 published Request for Startups plus 32 shorter prompts across trading, payments, asset management, capital formation, infrastructure and governance. Inspiration, not bounties - build one, build a variation, or build something else entirely.
+[IDEAS.md](IDEAS.md) holds the 12 published Request for Startups plus 28 shorter prompts across trading, payments, asset management, capital formation, infrastructure and governance. All of it is in scope: build one, build a variation, or build something else entirely.
 
 ## Resources
 

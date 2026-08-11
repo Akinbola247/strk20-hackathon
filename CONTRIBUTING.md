@@ -79,7 +79,7 @@ You don't need to set `demo_url` in most cases. The hub checks each project for 
    ```
 3. Take the next free ID. Don't renumber existing entries.
 
-Ideas are inspiration, not bounties - nothing on the list is funded, assigned, or reserved.
+Everything on the list is in scope for the sprint, and so is anything that isn't on it.
 
 ## Submitting
 
