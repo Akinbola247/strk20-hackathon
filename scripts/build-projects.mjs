@@ -107,15 +107,54 @@ const SPRINT_START = "2026-08-14T00:00:00Z";
  *
  * Avatars and names come straight off the commit payload, so this costs one
  * request per project rather than one per person. */
+/* Coding agents sign their work in a Co-Authored-By trailer, or commit under
+ * their own app account. Both are worth surfacing: building with an agent is
+ * encouraged here, so the agent is a participant rather than something to
+ * filter out. Matched against known identities only - an unrecognised
+ * co-author is far more likely to be a person than a tool. */
+const AGENTS = [
+  [/claude|anthropic/i, "Claude"],
+  [/copilot/i, "GitHub Copilot"],
+  [/\bcodex\b|openai/i, "Codex"],
+  [/cursor/i, "Cursor"],
+  [/devin/i, "Devin"],
+  [/\bjules\b/i, "Jules"],
+  [/windsurf|codeium/i, "Windsurf"],
+  [/\baider\b/i, "Aider"],
+];
+
+const agentName = (text) => {
+  for (const [re, name] of AGENTS) if (re.test(text)) return name;
+  return null;
+};
+
 async function detectBuilders(owner, repo, entry) {
   const seen = new Map();
   const counts = new Map();
+  const agents = new Map();
+
+  const noteAgent = (name) => agents.set(name, (agents.get(name) || 0) + 1);
 
   const collect = (commits) => {
     for (const c of commits || []) {
       const a = c.author;
-      /* Unlinked commit emails have no author object; bots are noise. */
-      if (!a?.login || a.type === "Bot" || /\[bot\]$/i.test(a.login)) continue;
+      const msg = c.commit?.message || "";
+
+      /* Co-authors never appear in the author field - GitHub puts only the
+         primary author there - so the trailer is the only place to read them. */
+      for (const line of msg.split("\n")) {
+        const m = line.match(/^\s*Co-Authored-By:\s*(.+)$/i);
+        if (m) { const n = agentName(m[1]); if (n) noteAgent(n); }
+      }
+
+      if (!a?.login) continue;
+      const isBot = a.type === "Bot" || /\[bot\]$/i.test(a.login);
+      if (isBot) {
+        /* A coding agent committing as itself counts; CI bots do not. */
+        const n = agentName(a.login);
+        if (n) noteAgent(n);
+        continue;
+      }
       counts.set(a.login, (counts.get(a.login) || 0) + 1);
       if (!seen.has(a.login)) {
         seen.set(a.login, {
@@ -146,7 +185,12 @@ async function detectBuilders(owner, repo, entry) {
     detected.push(await resolveUser(login));
   }
 
-  return detected;
+  return {
+    builders: detected,
+    agents: [...agents.entries()]
+      .sort((x, y) => y[1] - x[1])
+      .map(([name, commits]) => ({ name, commits })),
+  };
 }
 
 /* ---------- stack detection ---------- */
@@ -456,7 +500,7 @@ async function buildProject(entry, prev) {
     };
   }
 
-  const builders = await detectBuilders(owner, repo, entry);
+  const { builders, agents } = await detectBuilders(owner, repo, entry);
 
   const demoUrl = await resolveDemo(entry, meta, owner, repo);
   const contracts = await resolveContracts(entry);
@@ -501,6 +545,7 @@ async function buildProject(entry, prev) {
     pushed_at: meta?.pushed_at || null,
     stars: meta?.stargazers_count ?? 0,
     builders,
+    agents,
   };
 
   const head = await gh(`/repos/${owner}/${repo}/commits?per_page=1`);
@@ -524,6 +569,7 @@ async function buildProject(entry, prev) {
       description_long: prev.description_long || "",
       latest_push: prev.latest_push || "",
       tooling: prev.tooling || [],
+      agents: prev.agents || [],
       has_readme: !!prev.has_readme,
       additions: prev.additions || 0,
       deletions: prev.deletions || 0,
