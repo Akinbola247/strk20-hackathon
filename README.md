@@ -37,11 +37,16 @@ This is the only pull request you open. Everything else - your pushes, your stac
 
 Two fields. Everything else is read from the repository itself.
 
+`registry.json` is an array. Your object goes inside the brackets, with a comma after the entry above it:
+
 ```json
-{
-  "repo_url": "https://github.com/your-org/zk-mail",
-  "telegram": ["your_telegram", "teammate_telegram"]
-}
+[
+  ...,
+  {
+    "repo_url": "https://github.com/your-org/zk-mail",
+    "telegram": ["your_telegram", "teammate_telegram"]
+  }
+]
 ```
 
 | Field | Required | Notes |
