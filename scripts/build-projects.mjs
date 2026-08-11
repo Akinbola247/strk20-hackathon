@@ -117,23 +117,45 @@ const AGENTS = [
   [/copilot/i, "GitHub Copilot"],
   [/\bcodex\b|openai/i, "Codex"],
   [/cursor/i, "Cursor"],
+  [/^claude$/i, "Claude"],
   [/devin/i, "Devin"],
   [/\bjules\b/i, "Jules"],
   [/windsurf|codeium/i, "Windsurf"],
   [/\baider\b/i, "Aider"],
 ];
 
-const agentName = (text) => {
+/* The trailer carries the model that actually did the work - "Claude Opus 5",
+ * "GPT-5 Codex" - so keep it rather than flattening to a family name. The
+ * family is only used to pick the avatar. */
+const agentFamily = (text) => {
   for (const [re, name] of AGENTS) if (re.test(text)) return name;
   return null;
 };
+
+const cleanAgentName = (raw) => raw
+  .replace(/<[^>]*>/g, "")        // the email in a Co-Authored-By line
+  .replace(/\([^)]*\)/g, "")      // parenthetical notes like "(1M context)"
+  .replace(/\s+/g, " ")
+  .trim();
 
 async function detectBuilders(owner, repo, entry) {
   const seen = new Map();
   const counts = new Map();
   const agents = new Map();
 
-  const noteAgent = (name) => agents.set(name, (agents.get(name) || 0) + 1);
+  /* Keyed on family so the two ways an agent shows up merge into one entry:
+     the account that commits (which carries the avatar) and the Co-Authored-By
+     trailer (which carries the model). Name prefers the trailer, since
+     "Claude Opus 5" says more than the account's "Claude". */
+  const noteAgent = (display, family, avatar) => {
+    const prev = agents.get(family) || { family, commits: 0 };
+    agents.set(family, {
+      family,
+      name: display || prev.name || family,
+      avatar_url: avatar || prev.avatar_url || "",
+      commits: prev.commits + 1,
+    });
+  };
 
   const collect = (commits) => {
     for (const c of commits || []) {
@@ -144,17 +166,24 @@ async function detectBuilders(owner, repo, entry) {
          primary author there - so the trailer is the only place to read them. */
       for (const line of msg.split("\n")) {
         const m = line.match(/^\s*Co-Authored-By:\s*(.+)$/i);
-        if (m) { const n = agentName(m[1]); if (n) noteAgent(n); }
+        if (m) {
+          const family = agentFamily(m[1]);
+          if (family) noteAgent(cleanAgentName(m[1]), family, null);
+        }
       }
 
       if (!a?.login) continue;
-      const isBot = a.type === "Bot" || /\[bot\]$/i.test(a.login);
-      if (isBot) {
-        /* A coding agent committing as itself counts; CI bots do not. */
-        const n = agentName(a.login);
-        if (n) noteAgent(n);
+
+      /* Agents that commit as themselves show up as ordinary contributors -
+         github.com/claude and github.com/cursoragent are both User accounts -
+         so they are recognised by login before the human path. */
+      const loginFamily = agentFamily(a.login);
+      if (loginFamily) {
+        noteAgent(null, loginFamily, a.avatar_url);
         continue;
       }
+
+      if (a.type === "Bot" || /\[bot\]$/i.test(a.login)) continue;
       counts.set(a.login, (counts.get(a.login) || 0) + 1);
       if (!seen.has(a.login)) {
         seen.set(a.login, {
@@ -187,9 +216,7 @@ async function detectBuilders(owner, repo, entry) {
 
   return {
     builders: detected,
-    agents: [...agents.entries()]
-      .sort((x, y) => y[1] - x[1])
-      .map(([name, commits]) => ({ name, commits })),
+    agents: [...agents.values()].sort((x, y) => y.commits - x.commits),
   };
 }
 
