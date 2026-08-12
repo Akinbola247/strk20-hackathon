@@ -36,7 +36,7 @@ The rest are optional, and only worth setting if the derived value is wrong:
 - **`category`** - defaults to `Other`. One of `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other`.
 - **`team`** - builders are detected from the commit history. Add a username here only if detection misses someone: a different commit email, a co-author, or anyone who hasn't pushed yet.
 - **`x_handle`** - without the `@`. Used to credit you in sprint updates.
-- **`inspired_by`** - an ID from `IDEAS.md`. Ideas aren't exclusive; this just shows what's crowded.
+- **`inspired_by`** - an ID from `IDEAS.md`, if one of them is what you are building.
 
 ## strk20.json, in your repository
 

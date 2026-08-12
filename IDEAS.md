@@ -2,7 +2,7 @@
 
 Everything on this page is in scope for the sprint. So is anything that isn't on it - build one of these, build a variation, or build something nobody here has thought of.
 
-Ideas are not exclusive. Several teams can build the same one, and the hub shows how many are, so you can see what's crowded before you commit. Reference an idea with `"inspired_by": "IDEA-07"` in your registry entry.
+Ideas are not exclusive. Several teams can build the same one.
 
 > [!IMPORTANT]
 > Some of these depend on infrastructure that is **not shipped yet**, marked with a warning below. Sub-accounts and confidential compute are in progress, not available today. If one of those is central to your idea, ask in the group before you start so you know exactly what exists. A team that discovers the dependency in week two has lost the sprint.
