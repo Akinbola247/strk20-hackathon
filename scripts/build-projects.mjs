@@ -142,6 +142,10 @@ async function detectBuilders(owner, repo, entry) {
   const seen = new Map();
   const counts = new Map();
   const agents = new Map();
+  /* Which sprint days this repository was worked on. Collected here because
+     the commit list is already in hand for the builders - the strip costs no
+     extra requests. */
+  const days = new Set();
 
   /* Keyed on family so the two ways an agent shows up merge into one entry:
      the account that commits (which carries the avatar) and the Co-Authored-By
@@ -161,6 +165,16 @@ async function detectBuilders(owner, repo, entry) {
     for (const c of commits || []) {
       const a = c.author;
       const msg = c.commit?.message || "";
+
+      /* Committer date, not author date: a rebase or a cherry-pick keeps the
+         author date from whenever the work was first written, which would
+         credit a day the repository saw nothing. UTC throughout, so a team is
+         not handed an extra dot by its own timezone. */
+      const when = c.commit?.committer?.date || c.commit?.author?.date;
+      if (when) {
+        const d = new Date(when);
+        if (!isNaN(d)) days.add(d.toISOString().slice(0, 10));
+      }
 
       /* Co-authors never appear in the author field - GitHub puts only the
          primary author there - so the trailer is the only place to read them. */
@@ -217,6 +231,10 @@ async function detectBuilders(owner, repo, entry) {
   return {
     builders: detected,
     agents: [...agents.values()].sort((x, y) => y.commits - x.commits),
+    /* Sprint days only. The fallback query above reaches outside the window to
+       find faces for a repository that has not pushed yet, and those commits
+       must not light dots. */
+    active_days: [...days].filter((d) => d >= SPRINT_START.slice(0, 10)).sort(),
   };
 }
 
@@ -231,14 +249,25 @@ async function detectBuilders(owner, repo, entry) {
  * `live` marks the Starknet and STRK20 stack - those are highlighted on the
  * hub. Frameworks show up muted, because "uses React" is not interesting here.
  * The list tracks the routes documented at strk20-by-example.org. */
+/* Which parts of the STRK20 stack a project is actually built on.
+ *
+ * The third field is `stack`: true means it is a piece of STRK20 and earns a
+ * pill on the row; false means it is ordinary Starknet or web tooling, real but
+ * not what this page is about, so it stays in the project panel.
+ *
+ * Everything here comes from a manifest - a declared dependency is a fact.
+ * Nothing is inferred from prose; see TEXT_SIGNALS. */
 const DEP_SIGNALS = [
-  [/@starkware-libs\/starknet-privacy/, "Privacy SDK", true],
+  /* -sdk, not the bare prefix: @starkware-libs/starknet-privacy-bridge is a
+     different package and was lighting the SDK pill. */
+  [/@starkware-libs\/starknet-privacy-sdk/, "Privacy SDK", true],
+  [/(^|\/)starknet-start$/, "starknet-start", true],
   [/@avnu\/|avnu-sdk/, "AVNU", true],
   [/ekubo/i, "Ekubo", true],
   [/vesu/i, "Vesu", true],
-  [/get-starknet/, "get-starknet", true],
-  [/^starknet$|starknet\.js/, "starknet.js", true],
-  [/starknetkit/i, "Starknetkit", true],
+  [/get-starknet/, "get-starknet", false],
+  [/^starknet$|starknet\.js/, "starknet.js", false],
+  [/starknetkit/i, "Starknetkit", false],
   [/^@?next$/, "Next.js", false],
   [/^react$/, "React", false],
   [/^vite$/, "Vite", false],
@@ -246,24 +275,37 @@ const DEP_SIGNALS = [
   [/^typescript$/, "TypeScript", false],
 ];
 
+/* Prose, so nothing here may claim a piece of the STRK20 stack.
+ *
+ * These run over the README and the manifests, and a README says what a team
+ * means to do. "We plan to build an anonymizer" matched /anonymizer/i and lit
+ * the same pill as a team that had shipped one; "shielded" matches essentially
+ * every STRK20 README ever written. Those signals are gone rather than
+ * downgraded - a pill on a public page is a claim we are making on the team's
+ * behalf, and this is the whole reason the stack pills are manifest-only.
+ *
+ * What is left is ordinary tooling, where a false positive costs nothing. */
 const TEXT_SIGNALS = [
-  [/privacy_invoke|privacyInvoke/, "privacy_invoke", true],
-  [/anonymizer/i, "Anonymizer", true],
-  [/sub-?accounts?/i, "Sub-accounts", true],
-  [/wallet\s?api|starknet_wallet|walletApi/i, "Wallet API", true],
-  [/discoverNotes|IndexerDiscoveryProvider|note discovery/i, "Note discovery", true],
-  [/proving\s?service|PROVING_SERVICE|proverUrl/i, "Prover", true],
-  [/shielded|unshield/i, "Shielded balances", true],
   [/snforge|starknet-foundry/i, "Starknet Foundry", false],
-  [/get-starknet/i, "get-starknet", true],
-  [/avnu/i, "AVNU", true],
-  [/ekubo/i, "Ekubo", true],
-  [/vesu/i, "Vesu", true],
 ];
+
+/* Just the [dependencies] and [dev-dependencies] tables of a Scarb.toml.
+ * Scoped so a package named "privacy" - or the word in a comment further down
+ * the file - cannot be mistaken for depending on the pool's Cairo. */
+function scarbDependencies(scarb) {
+  const out = [];
+  let inDeps = false;
+  for (const line of scarb.split("\n")) {
+    const header = line.match(/^\s*\[([^\]]+)\]/);
+    if (header) { inDeps = /^(dev-)?dependencies$/.test(header[1].trim()); continue; }
+    if (inDeps) out.push(line);
+  }
+  return out.join("\n");
+}
 
 async function detectTooling(owner, repo, readme, langs) {
   const found = new Map();
-  const add = (label, live) => { if (!found.has(label)) found.set(label, { label, live }); };
+  const add = (label, stack) => { if (!found.has(label)) found.set(label, { label, live: stack, stack }); };
 
   const pkgRaw = await getTextFile(owner, repo, "package.json");
   if (pkgRaw) {
@@ -271,16 +313,29 @@ async function detectTooling(owner, repo, readme, langs) {
       const pkg = JSON.parse(pkgRaw);
       const deps = Object.keys({ ...pkg.dependencies, ...pkg.devDependencies });
       for (const dep of deps) {
-        for (const [re, label, live] of DEP_SIGNALS) if (re.test(dep)) add(label, live);
+        for (const [re, label, stack] of DEP_SIGNALS) if (re.test(dep)) add(label, stack);
       }
     } catch { warn(`${owner}/${repo} has an unparseable package.json`); }
   }
 
   const scarb = await getTextFile(owner, repo, "Scarb.toml");
-  if (scarb) add("Cairo", true);
+  if (scarb) {
+    add("Cairo", false);
+    /* An anonymizer is a Cairo contract the pool calls through privacy_invoke,
+     * and to compile one you need the pool's own objects - the reference
+     * packages both declare `privacy = { path = "../privacy" }`, and a team
+     * outside the monorepo reaches the same package over git. Either way the
+     * dependency is what gives it away, and nobody adds it by accident.
+     *
+     * One pill whether they shipped one anonymizer or four: the interesting
+     * fact is that they wrote Cairo the pool calls, not how many. Teams that
+     * vendor the interface instead of depending on it are missed until the
+     * source scan lands, which reads for `fn privacy_invoke` directly. */
+    if (/^\s*privacy\s*=/m.test(scarbDependencies(scarb))) add("Anonymizer contract", true);
+  }
 
   if (langs) {
-    if (langs.Cairo) add("Cairo", true);
+    if (langs.Cairo) add("Cairo", false);
     if (langs.Rust) add("Rust", false);
   }
 
@@ -527,7 +582,7 @@ async function buildProject(entry, prev) {
     };
   }
 
-  const { builders, agents } = await detectBuilders(owner, repo, entry);
+  const { builders, agents, active_days } = await detectBuilders(owner, repo, entry);
 
   const demoUrl = await resolveDemo(entry, meta, owner, repo);
   const contracts = await resolveContracts(entry);
@@ -573,6 +628,7 @@ async function buildProject(entry, prev) {
     stars: meta?.stargazers_count ?? 0,
     builders,
     agents,
+    active_days,
   };
 
   const head = await gh(`/repos/${owner}/${repo}/commits?per_page=1`);
