@@ -31,7 +31,6 @@
     "active_days": [],
     "head_sha": "781fbfc49629cf88518e235888b2d164c8109b45",
     "readme_hash": "144:# Zylith Client\n\nTrading and liquidity web app for Zylith.\n\nThis public repository contains the Zylith client application and integration code.\n",
-    "churn_pct": 3,
     "summary": "Create a trading and liquidity web app for Zylith.",
     "description_long": "The project builds a web application that facilitates trading and liquidity management on the Zylith platform. It focuses on integrating various features to ensure that users can easily access and manage their trading activities.",
     "latest_push": "Hardened the privacy service proxy and added market data adapters.",
@@ -69,6 +68,7 @@
     ],
     "has_readme": true,
     "additions": 1408,
-    "deletions": 95
+    "deletions": 95,
+    "churn_pct": 3
   }
 ]
