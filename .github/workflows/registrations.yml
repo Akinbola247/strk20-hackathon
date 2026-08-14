@@ -1,19 +1,24 @@
 name: Registrations
 
-# Keeps every open registration pull request mergeable, and merges it.
+# Applies open registration pull requests to main, unattended.
 #
 # Registration is an append to a single JSON array, so the moment one pull
-# request merges, every other one conflicts. Left to contributors, that conflict
+# request lands, every other one conflicts. Left to contributors, that conflict
 # gets resolved in the web editor by taking one side of the file, which drops a
 # project that was already accepted - it has happened once already. So the
-# resolution is done here instead: main's registry, plus whatever this branch
+# resolution is done here instead: main's registry, plus whatever the branch
 # added. There is no judgement in that, only bookkeeping.
 #
-# Merging is unattended. A registration that adds its own entry and validates
-# goes in, and the project is on the hub within the half hour. Nothing here
-# reads the application - the checks are about the shape of the file, not about
-# whether the project belongs in the sprint. A maintainer stops one by putting
-# the "hold" label on it, or reverts it from main afterwards.
+# Nothing is pushed to a contributor's branch. That was the first design, and
+# GITHUB_TOKEN cannot do it: merging main into a fork branch carries main's
+# workflow files with it, and a token without the `workflows` scope - which no
+# GITHUB_TOKEN has - is refused. So the resolved registry is committed straight
+# to main, crediting the author, and the pull request is closed pointing at the
+# commit. Contributors never touch a conflict either way.
+#
+# Nothing here reads the application. The checks are about the shape of the file,
+# not about whether a project belongs in the sprint. A maintainer stops one with
+# the "hold" label, or reverts it from main afterwards.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, labeled]
@@ -29,20 +34,19 @@ permissions:
   contents: write
   pull-requests: write
 
-# Two runs pushing to the same branches would race. A push to main and an open
-# pull request arriving together is the normal case, not the rare one.
+# Every run commits to main, so two of them at once would race for the same ref.
 concurrency:
   group: registrations
   cancel-in-progress: false
 
 jobs:
-  sync:
+  apply:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      # Always the base repository, never the pull request's code. A fork can
-      # change anything under scripts/, so every branch is restored to main's
-      # scripts before anything runs and is only ever read as data.
+      # Always the base repository, never a pull request's code. The working
+      # tree stays on main for the whole run - branches are read as data with
+      # git show, never checked out, so nothing from a fork is ever executed.
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -59,14 +63,14 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           # The default shell is bash -e, and almost every command in this loop
-          # is allowed to fail: a branch that cannot be checked out, a commit
-          # with nothing in it, a merge that conflicts on purpose. One pull
-          # request going wrong must not take the rest of the run with it.
+          # is allowed to fail: a branch that cannot be read, a validation that
+          # rejects, a push that loses a race. One pull request going wrong must
+          # not take the rest of the run with it.
           set +e
           set -uo pipefail
 
-          # A merge into main invalidates every other open branch, so that case
-          # fans out. A pull request event only concerns itself.
+          # A registration landing on main invalidates every other open branch,
+          # so that case fans out. A pull request event only concerns itself.
           if [ "$EVENT" = "pull_request_target" ]; then
             numbers="$PR"
           else
@@ -76,18 +80,17 @@ jobs:
 
           git config user.name  "strk20-sprint-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-          git show origin/main:registry.json > "$RUNNER_TEMP/main.json"
 
+          applied=0
           for n in $numbers; do
             echo "::group::PR #$n"
 
-            meta=$(gh pr view "$n" --json files,labels,isDraft,state)
+            meta=$(gh pr view "$n" --json files,labels,isDraft,state,author)
             if [ "$(jq -r '.state' <<< "$meta")" != "OPEN" ] || [ "$(jq -r '.isDraft' <<< "$meta")" = "true" ]; then
               echo "not an open, ready pull request - skipped"; echo "::endgroup::"; continue
             fi
 
-            # Rebuilding the file is only safe when registry.json is the whole
+            # Applying it for them is only safe when registry.json is the whole
             # change. A branch that also touches scripts or workflows is a
             # maintainer's problem, not a bookkeeping one.
             touched=$(jq -r '[.files[].path] | sort | join(",")' <<< "$meta")
@@ -95,136 +98,107 @@ jobs:
               echo "touches $touched - not a plain registration, skipped"; echo "::endgroup::"; continue
             fi
 
-            # The previous branch left the trusted scripts restored over its own,
-            # and git refuses to check out across those. Nothing here is worth
-            # keeping between branches - everything was pushed as it was made.
-            git reset --hard --quiet
-            git clean -qfd
-
-            if ! gh pr checkout "$n" --force; then
-              echo "could not check out - skipped"; echo "::endgroup::"; continue
+            # Registrations land on their own. The only thing that stops one is
+            # a maintainer putting "hold" on it - worth doing the moment
+            # something looks like spam, because a revert is the way back out.
+            if jq -e '.labels[] | select(.name == "hold")' <<< "$meta" > /dev/null; then
+              echo "on hold - leaving for a maintainer"; echo "::endgroup::"; continue
             fi
 
-            # Read before anything touches the worktree. base is what the
-            # contributor started from - without it an entry they deliberately
-            # edited is indistinguishable from a stale copy - and head is the
-            # branch's own file, before main is merged into it.
-            base_sha=$(git merge-base origin/main HEAD)
+            # Read as data. The working tree stays on main.
+            git fetch --no-tags --quiet origin "refs/pull/$n/head"
+            head_sha=$(git rev-parse FETCH_HEAD)
+            if ! git show "${head_sha}:registry.json" > "$RUNNER_TEMP/head.json" 2>/dev/null; then
+              echo "no registry.json on this branch - skipped"; echo "::endgroup::"; continue
+            fi
+            # What the contributor started from. Without it an entry they
+            # deliberately edited is indistinguishable from a stale copy.
+            base_sha=$(git merge-base HEAD "$head_sha")
             git show "${base_sha}:registry.json" > "$RUNNER_TEMP/base.json" 2>/dev/null || echo "[]" > "$RUNNER_TEMP/base.json"
-            cp registry.json "$RUNNER_TEMP/head.json"
-
-            # Merging comes before the scripts are restored: git refuses to
-            # merge into a dirty worktree, and restoring first is what made this
-            # fail on its second live run.
-            #
-            # Writing the right file is not enough on its own either. Git merges
-            # text, so a branch that appended its entry where main appended
-            # someone else's conflicts however correct the result is - GitHub
-            # reported four already-synced branches as CONFLICTING for exactly
-            # that reason. Making main an ancestor is what clears it.
-            behind=0
-            git merge-base --is-ancestor origin/main HEAD || behind=1
-            if [ "$behind" = "1" ]; then
-              git merge --no-commit --no-ff origin/main > /dev/null 2>&1
-              # Every file but registry.json belongs to main here - this branch
-              # was checked above not to touch any of them.
-              git checkout --theirs -- . > /dev/null 2>&1
-              git add -A > /dev/null 2>&1
-            fi
-
-            # The branch's own scripts are never trusted or run.
-            git restore --source=origin/main --worktree -- scripts .github > /dev/null 2>&1
-            git restore --source=origin/main --worktree -- registry-removals.json > /dev/null 2>&1
+            cp registry.json "$RUNNER_TEMP/main.json"
 
             if ! MAIN="$RUNNER_TEMP/main.json" BASE="$RUNNER_TEMP/base.json" HEAD="$RUNNER_TEMP/head.json" \
                  SUMMARY="$RUNNER_TEMP/summary.json" \
                  node scripts/merge-registry.mjs > "$RUNNER_TEMP/merged.json"; then
-              gh pr comment "$n" --body "This branch's \`registry.json\` could not be merged automatically - it has unresolved conflict markers or is not valid JSON. Fix it on the branch and this will pick it up again."
+              gh pr comment "$n" --body "This branch's \`registry.json\` could not be read - it has unresolved conflict markers, or it is not valid JSON. Fix it on the branch and this will pick it up again."
               echo "::endgroup::"; continue
             fi
 
-            cp "$RUNNER_TEMP/merged.json" registry.json
-            git add -A > /dev/null 2>&1
+            added=$(jq -r '.added | join(" ")' "$RUNNER_TEMP/summary.json")
+            updated=$(jq -r '.updated | join(" ")' "$RUNNER_TEMP/summary.json")
+            author=$(jq -r '.author.login' <<< "$meta")
 
-            # Nothing staged and no merge in progress means the branch already
-            # said what it should. Committing that would be an empty commit and
-            # a pointless push.
-            if git diff --cached --quiet && [ ! -f .git/MERGE_HEAD ]; then
-              echo "already in sync with main"
-            else
-              git commit -q -m "chore: sync registry.json with main" \
-                            -m "Rebuilt as main's registry plus this branch's entries, so the append-only conflict does not have to be resolved by hand."
-              # A fork branch is only pushable when the author left "allow edits
-              # by maintainers" on. Saying so is more useful than a red run.
-              if ! git push; then
-                gh pr comment "$n" --body "main has moved on since this branch was opened, and I cannot push the fix because *Allow edits by maintainers* is off for this pull request. Either turn it on, or merge main into your branch yourself and keep **every** entry from both sides - a project already in the table must not disappear."
-                echo "::endgroup::"; continue
-              fi
-              echo "synced"
-            fi
-
-            # Registrations merge themselves. The only thing that stops one is a
-            # maintainer putting "hold" on it - which is worth doing the moment
-            # something looks like spam, because by then it is already in the
-            # table and a revert is the way back out.
-            if jq -e '.labels[] | select(.name == "hold")' <<< "$meta" > /dev/null; then
-              echo "on hold - leaving for a maintainer"; echo "::endgroup::"; continue
+            if [ -z "$added" ] && [ -z "$updated" ]; then
+              echo "adds nothing and changes nothing - already on main"; echo "::endgroup::"; continue
             fi
 
             # Appending your own project is bookkeeping. Rewriting a row that is
             # already in the table is a claim about someone else's project - one
             # of the fields it can change is the contact the team is reached on.
-            # It merges unattended only if the author has a visible claim to the
+            # It lands unattended only if the author has a visible claim to the
             # row, checked against main and GitHub rather than the branch.
-            updated=$(jq -r '.updated | join(" ")' "$RUNNER_TEMP/summary.json")
             if [ -n "$updated" ]; then
-              author=$(gh pr view "$n" --json author --jq '.author.login')
               if ! MAIN="$RUNNER_TEMP/main.json" UPDATED="$updated" AUTHOR="$author" \
                    node scripts/check-row-ownership.mjs; then
                 gh pr comment "$n" --body "This changes rows that are already in the table (\`${updated}\`), and I cannot tell that they are yours - you are not listed in their \`team\` on main, and you do not own the repositories they point at. Leaving this for a maintainer. If it is your project, say so here."
                 echo "changes rows it does not own - left for a maintainer"; echo "::endgroup::"; continue
               fi
             fi
-            if [ -z "$updated" ] && [ "$(jq -r '.added | length' "$RUNNER_TEMP/summary.json")" = "0" ]; then
-              echo "adds nothing and changes nothing - left for a maintainer"; echo "::endgroup::"; continue
-            fi
 
-            # Validated here rather than by reading the pull request's checks.
-            # A commit pushed with GITHUB_TOKEN does not start a new workflow
-            # run, so the check on the pull request still describes the file as
-            # it was before the sync above. This is the file that would merge.
+            cp "$RUNNER_TEMP/merged.json" registry.json
+
             if ! node scripts/validate-registry.mjs; then
-              gh pr comment "$n" --body "\`registry.json\` does not validate, so this is not merging yet. Every problem is listed in the Registrations run - fix them on this branch and it will merge itself."
+              gh pr comment "$n" --body "\`registry.json\` does not validate, so this is not going in yet. Every problem is listed in the Registrations run - push a fix to this branch and it will be applied on its own."
+              git checkout --quiet -- registry.json
               echo "::endgroup::"; continue
             fi
             if ! HISTORY_REF=origin/main node scripts/check-registry-retention.mjs; then
-              gh pr comment "$n" --body "Merging this would drop a project that is already in the table, so it is on hold. The Registrations run says which one and prints the entry to put back."
+              gh pr comment "$n" --body "Applying this would drop a project that is already in the table, so it is on hold. The Registrations run says which one and prints the entry to put back."
+              git checkout --quiet -- registry.json
               echo "::endgroup::"; continue
             fi
 
-            # GitHub works out whether a branch merges cleanly in the background,
-            # and the answer is UNKNOWN for a second or two after a push. Asking
-            # to merge during that window is refused as a conflict, which is how
-            # the first live run left four synced branches sitting open.
-            mergeable=""
-            for _ in $(seq 1 20); do
-              mergeable=$(gh pr view "$n" --json mergeable --jq '.mergeable')
-              [ "$mergeable" = "UNKNOWN" ] || break
-              sleep 3
-            done
+            # Credited to the person who wrote it. The numeric id is what makes
+            # GitHub attach the co-authorship to their account.
+            author_id=$(gh api "users/$author" --jq '.id' 2>/dev/null)
+            {
+              echo "chore: register ${added:-$updated} (#$n)"
+              echo
+              echo "Applied from #$n by @$author, rebuilt on top of whatever else"
+              echo "landed while it was open."
+              if [ -n "$author_id" ]; then
+                echo
+                echo "Co-authored-by: $author <${author_id}+${author}@users.noreply.github.com>"
+              fi
+            } > "$RUNNER_TEMP/message.txt"
 
-            if [ "$mergeable" != "MERGEABLE" ]; then
-              gh pr comment "$n" --body "This is in sync with main and valid, but GitHub still reports it as \`${mergeable}\`. Leaving it - the next run will try again."
-              echo "mergeable=$mergeable - not merging this run"; echo "::endgroup::"; continue
+            git add registry.json
+            git commit --quiet -F "$RUNNER_TEMP/message.txt"
+
+            if ! git push origin HEAD:main; then
+              # Something else moved main mid-run. Nothing is lost - the next
+              # run rebuilds this against whatever main says then.
+              echo "main moved while applying - will retry next run"
+              git fetch --quiet origin main && git reset --hard --quiet origin/main
+              echo "::endgroup::"; continue
             fi
 
-            gh pr merge "$n" --squash --delete-branch || \
-              gh pr comment "$n" --body "Valid and in sync, but the merge did not go through. Merging by hand is safe now: the branch already contains every entry on main."
-
-            # Each merge moves main, so the next branch in this loop has to be
-            # rebuilt against the registry as it is now, not as it was at the
-            # start of the run.
-            git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-            git show origin/main:registry.json > "$RUNNER_TEMP/main.json"
+            sha=$(git rev-parse --short HEAD)
+            {
+              echo "Applied to main as \`${sha}\` - your project is on the hub within the half hour."
+              echo
+              echo "Closed rather than merged because the entry was rebuilt on top of everything else that landed while this was open. That is what stops registrations from deleting each other, and it means you never had to resolve a conflict. The commit is credited to you."
+            } > "$RUNNER_TEMP/closing.md"
+            gh pr comment "$n" --body-file "$RUNNER_TEMP/closing.md"
+            gh pr close "$n"
+            applied=1
+            echo "applied as $sha"
             echo "::endgroup::"
           done
+
+          # A push made with GITHUB_TOKEN does not start another workflow, so
+          # the rebuild has to be asked for. Without this the hub waits for the
+          # half-hourly cron instead.
+          if [ "$applied" = "1" ]; then
+            gh workflow run "Index projects" && echo "asked for a projects.json rebuild"
+          fi
