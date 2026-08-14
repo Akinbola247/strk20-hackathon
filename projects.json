@@ -216,7 +216,13 @@
     "status": "building",
     "pushed_at": "2026-08-14T11:08:24Z",
     "stars": 0,
-    "builders": [],
+    "builders": [
+      {
+        "login": "0xrlawrence",
+        "name": "Ralph Lawrence",
+        "avatar_url": "https://avatars.githubusercontent.com/u/250132405?v=4"
+      }
+    ],
     "agents": [
       {
         "family": "Claude",
@@ -414,6 +420,11 @@
         "login": "PoulavBhowmick03",
         "name": "PoulavBhowmick03",
         "avatar_url": "https://avatars.githubusercontent.com/u/133862694?v=4"
+      },
+      {
+        "login": "ishitab02",
+        "name": "ishitab02",
+        "avatar_url": "https://avatars.githubusercontent.com/u/139248026?v=4"
       }
     ],
     "agents": [],
