@@ -1,5 +1,74 @@
 [
   {
+    "slug": "feltproof",
+    "name": "Quietline",
+    "one_liner": "Encrypted on-chain mail on Starknet. Payment memos ride the same private transfer.",
+    "category": "Other",
+    "repo_url": "https://github.com/gstohl/feltproof",
+    "demo_url": "https://github.com/gstohl/feltproof",
+    "demo_video": "",
+    "x_handle": "",
+    "inspired_by": "RFP-01",
+    "contracts": [],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": true,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T02:04:14Z",
+    "stars": 0,
+    "builders": [
+      {
+        "login": "gstohl",
+        "name": "gstohl",
+        "avatar_url": "https://avatars.githubusercontent.com/u/191050810?v=4"
+      }
+    ],
+    "agents": [],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "a79bae724b3210f10a4e8e28b58902868ed2df10",
+    "readme_hash": "2291:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
+    "churn_pct": 41.1,
+    "summary": "Create encrypted on-chain mail on Starknet.",
+    "description_long": "The project allows users to send encrypted messages on Starknet without revealing sender or recipient identities. It utilizes a `privacy_invoke` helper to ensure that only the intended recipient can decrypt the message, while also enabling optional payment memos within the same transaction. The challenge lies in maintaining privacy in a public blockchain environment while ensuring functionality and user-friendliness.",
+    "latest_push": "Pivoted Feltproof to Quietline, integrating private mail on STRK20.",
+    "tooling": [
+      {
+        "label": "get-starknet",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "Next.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "React",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "starknet.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "TypeScript",
+        "live": false,
+        "stack": false
+      }
+    ],
+    "has_readme": true,
+    "additions": 152,
+    "deletions": 447
+  },
+  {
     "slug": "client",
     "name": "client",
     "one_liner": "Zylith trading and liquidity client.",
