@@ -76,17 +76,33 @@ for (const entry of base) {
 
 const added = [];
 const updated = [];
+const carried = [];
 for (const entry of head) {
-  const key = normalize(entry?.repo_url);
+  /* Both the name the entry gives and the name GitHub calls it now, so a branch
+     pointing at a repository main knows under its old name still finds it. */
+  const keys = await aliases(entry?.repo_url);
+  const key = keys[0] || null;
+  const index = keys.map((k) => indexByKey.get(k)).find((i) => i !== undefined);
+  const before = keys.map((k) => baseByKey.get(k)).find(Boolean);
 
-  /* Not a repository URL. Keep it so the branch is not silently emptied -
+  /* Not a repository URL at all. Keep it only if the branch introduced it -
      validate-registry.mjs is what tells the contributor it is wrong. */
   if (!key) {
-    if (!merged.some((e) => JSON.stringify(e) === JSON.stringify(entry))) merged.push(entry);
+    const same = (e) => JSON.stringify(e) === JSON.stringify(entry);
+    if (base.some(same)) continue;
+    if (!merged.some(same)) merged.push(entry);
     continue;
   }
 
-  if (!indexByKey.has(key)) {
+  if (index === undefined) {
+    /* Missing from main but present in what this branch started from, so main
+       dropped it after this branch was opened - a rename, or a removal that
+       registry-removals.json records. The branch is carrying a stale copy, not
+       registering anything, and re-adding it would undo that. */
+    if (before) {
+      carried.push(key);
+      continue;
+    }
     indexByKey.set(key, merged.length);
     merged.push(entry);
     added.push(key);
@@ -96,14 +112,13 @@ for (const entry of head) {
   /* Already on main. Taking this branch's version would undo whatever main has
      learned since - so it only wins where the branch deliberately changed the
      entry it started from. A branch that simply carries a stale copy loses. */
-  const before = baseByKey.get(key);
   if (before && JSON.stringify(before) !== JSON.stringify(entry)) {
-    merged[indexByKey.get(key)] = entry;
+    merged[index] = entry;
     updated.push(key);
   }
 }
 
-console.error(`merged: ${main.length} on main, ${added.length} added${added.length ? ` (${added.join(", ")})` : ""}, ${updated.length} updated${updated.length ? ` (${updated.join(", ")})` : ""}`);
+console.error(`merged: ${main.length} on main, ${added.length} added${added.length ? ` (${added.join(", ")})` : ""}, ${updated.length} updated${updated.length ? ` (${updated.join(", ")})` : ""}${carried.length ? `, ${carried.length} stale carried and dropped (${carried.join(", ")})` : ""}`);
 
 /* Whoever is deciding whether this can merge unattended needs to know the
  * difference between a branch that appended its own project and one that
