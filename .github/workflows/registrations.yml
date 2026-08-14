@@ -118,13 +118,27 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
-            if cmp -s "$RUNNER_TEMP/merged.json" registry.json; then
+            # Writing the right file is not enough on its own. Git merges text,
+            # so a branch that appended its entry where main appended someone
+            # else's conflicts however correct the result is - GitHub reported
+            # four synced branches as CONFLICTING for exactly this reason. What
+            # clears it is making main an ancestor of the branch.
+            behind=0
+            git merge-base --is-ancestor origin/main HEAD || behind=1
+            if [ "$behind" = "1" ]; then
+              git merge --no-commit --no-ff origin/main > /dev/null 2>&1 || true
+              # Every file but registry.json belongs to main here - this branch
+              # was checked above not to touch any of them.
+              git checkout --theirs -- . > /dev/null 2>&1 || true
+            fi
+
+            if [ "$behind" = "0" ] && cmp -s "$RUNNER_TEMP/merged.json" registry.json; then
               echo "already in sync with main"
             else
               cp "$RUNNER_TEMP/merged.json" registry.json
-              git add registry.json
-              git commit -m "chore: sync registry.json with main" \
-                         -m "Rebuilt as main's registry plus this branch's entries, so the append-only conflict does not have to be resolved by hand."
+              git add -A
+              git commit -q -m "chore: sync registry.json with main" \
+                            -m "Rebuilt as main's registry plus this branch's entries, so the append-only conflict does not have to be resolved by hand."
               # A fork branch is only pushable when the author left "allow edits
               # by maintainers" on. Saying so is more useful than a red run.
               if ! git push; then
