@@ -76,8 +76,13 @@ registry.forEach((entry, i) => {
     }
   }
 
+  /* Not an error. The category only picks which filter a project sits under on
+     the hub, and build-projects.mjs already falls back to Other for anything it
+     does not recognise. Refusing a registration over it meant a team that
+     described itself in one word we had not thought of - "Trading" - sat
+     blocked behind a check while everyone else was building. */
   if (entry.category && !CATEGORIES.includes(entry.category)) {
-    err(where, `category "${entry.category}" must be one of: ${CATEGORIES.join(", ")}`);
+    notes.push(`${where}: category "${entry.category}" is not one the hub filters on (${CATEGORIES.join(", ")}), so it will show under Other. Pick one of those if you would rather be listed there.`);
   }
 
   /* Optional: at registration the only valid value is "building", so requiring

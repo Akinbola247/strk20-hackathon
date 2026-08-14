@@ -61,7 +61,7 @@ Optional, only if the derived value is wrong:
 | `name` | the repository name | |
 | `one_liner` | the repository description | |
 | `slug` | the repository name, lowercased | must be unique |
-| `category` | defaults to `Other` | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other` |
+| `category` | defaults to `Other` | `Consumer`, `DeFi`, `Tooling`, `Infra`, `Payments`, `Gaming`, `Other` - anything else lists you under `Other` |
 | `team` | commit history | GitHub usernames, for anyone detection misses |
 | `x_handle` | - | without the `@` |
 | `inspired_by` | - | an ID from [IDEAS.md](IDEAS.md) |
