@@ -57,15 +57,37 @@ jobs:
         run: node scripts/build-projects.mjs
 
       - name: Commit if changed
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          set +e
           git config user.name  "strk20-sprint-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add projects.json
-          # No push activity since the last tick is the common case - exit quietly
-          # rather than creating an empty commit every 30 minutes.
-          if git diff --cached --quiet; then
-            echo "no changes"
-            exit 0
-          fi
-          git commit -m "chore: reindex projects [skip ci]"
-          git push
+
+          # Registrations land on main while this is running, so the push can
+          # lose a race - and did, dropping a rebuild that had already been
+          # computed. projects.json is derived, so the answer is always to take
+          # the newer main and build again on top of it rather than to merge.
+          for attempt in 1 2 3; do
+            git add projects.json
+            # No push activity since the last tick is the common case - exit
+            # quietly rather than creating an empty commit every 30 minutes.
+            if git diff --cached --quiet; then
+              echo "no changes"
+              exit 0
+            fi
+
+            git commit -q -m "chore: reindex projects [skip ci]"
+            if git push; then
+              echo "published on attempt $attempt"
+              exit 0
+            fi
+
+            echo "main moved while indexing - rebuilding on top of it"
+            git fetch --quiet origin main && git reset --hard --quiet origin/main
+            node scripts/build-projects.mjs || exit 1
+          done
+
+          echo "main kept moving - leaving it for the next tick"
+          exit 1
