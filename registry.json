@@ -15,5 +15,9 @@
     "category": "Other",
     "inspired_by": "RFP-01",
     "team": ["gstohl"]
+  },
+  {
+    "repo_url": "https://github.com/Sarthib7/stk402",
+    "telegram": ["sarthib7"]
   }
 ]
