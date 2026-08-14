@@ -66,5 +66,13 @@
     ],
     "x_handle": "kamalbuilds",
     "inspired_by": "IDEA-13"
+  },
+  {
+    "repo_url": "https://github.com/0xrlawrence/envelope",
+    "telegram": [
+      "fullstack0x"
+    ],
+    "category": "Payments",
+    "inspired_by": "IDEA-09"
   }
 ]
