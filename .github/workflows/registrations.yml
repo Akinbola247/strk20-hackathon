@@ -33,6 +33,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # Asking for the projects.json rebuild at the end is a workflow dispatch.
+  actions: write
 
 # Every run commits to main, so two of them at once would race for the same ref.
 concurrency:
@@ -200,5 +202,11 @@ jobs:
           # the rebuild has to be asked for. Without this the hub waits for the
           # half-hourly cron instead.
           if [ "$applied" = "1" ]; then
-            gh workflow run "Index projects" && echo "asked for a projects.json rebuild"
+            gh workflow run "Index projects" && echo "asked for a projects.json rebuild" \
+              || echo "could not ask for a rebuild - the half-hourly cron will do it"
           fi
+
+          # Whether a registration was rejected, or the rebuild could not be
+          # asked for, the run itself did its job. Only a crash above is a
+          # failure, and those exit on their own.
+          exit 0
