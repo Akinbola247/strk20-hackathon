@@ -4,8 +4,8 @@
     "name": "Quietline",
     "one_liner": "Encrypted on-chain mail on Starknet. Payment memos ride the same private transfer.",
     "category": "Other",
-    "repo_url": "https://github.com/gstohl/feltproof",
-    "demo_url": "https://github.com/gstohl/feltproof",
+    "repo_url": "https://github.com/gstohl/quietline",
+    "demo_url": "https://github.com/gstohl/quietline",
     "demo_video": "",
     "x_handle": "",
     "inspired_by": "RFP-01",
@@ -18,7 +18,7 @@
       "mainnet": false
     },
     "status": "building",
-    "pushed_at": "2026-08-14T09:14:10Z",
+    "pushed_at": "2026-08-14T10:55:08Z",
     "stars": 0,
     "builders": [
       {
@@ -31,12 +31,12 @@
     "active_days": [
       "2026-08-14"
     ],
-    "head_sha": "3555be38e1d7bb36188a898d1dc28e5b291a22ba",
-    "readme_hash": "3971:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
-    "churn_pct": 11.5,
-    "summary": "Enable encrypted mail transactions on Starknet using private transfers.",
-    "description_long": "This project implements a private messaging system on Starknet, ensuring both message content and sender/recipient identities remain hidden. It allows users to send encrypted messages alongside private transfers, so remittance and notes can be bundled in a single transaction.",
-    "latest_push": "Hardened Quietline mail handling with several file modifications.",
+    "head_sha": "293f42fb8749994d715ec9de274b1cd96e9adfb3",
+    "readme_hash": "4996:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
+    "churn_pct": 15.5,
+    "summary": "Provide encrypted on-chain mail with private transfer options on Starknet.",
+    "description_long": "The project implements a private-mail loop that allows users to send encrypted messages without revealing sender or recipient identities on the Starknet mainnet. It utilizes a 'privacy_invoke' helper to ensure that messages remain plaintext only on the recipient's device, and it can attach memos to private transfers, thereby keeping transaction details obscured from observers. Key challenges include maintaining the privacy of sender and recipient efficiently while ensuring reliable delivery through the blockchain infrastructure.",
+    "latest_push": "Renamed the repository and added a real privacy pool devnet harness.",
     "tooling": [
       {
         "label": "get-starknet",
@@ -75,8 +75,8 @@
       }
     ],
     "has_readme": true,
-    "additions": 293,
-    "deletions": 106
+    "additions": 580,
+    "deletions": 14
   },
   {
     "slug": "erebus",
