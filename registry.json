@@ -51,5 +51,20 @@
     ],
     "name": "Cutout",
     "category": "Infra"
+  },
+  {
+    "repo_url": "https://github.com/kamalbuilds/neobank",
+    "telegram": [
+      "kamalthedev"
+    ],
+    "name": "Private money account",
+    "one_liner": "Hold, send, and earn on STRK20 without publishing salary or net worth.",
+    "slug": "neobank",
+    "category": "Consumer",
+    "team": [
+      "kamalbuilds"
+    ],
+    "x_handle": "kamalbuilds",
+    "inspired_by": "IDEA-13"
   }
 ]
