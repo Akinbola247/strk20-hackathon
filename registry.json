@@ -6,10 +6,10 @@
   {
     "repo_url": "https://github.com/gstohl/feltproof",
     "telegram": ["stack_ref_error"],
-    "name": "Feltproof",
-    "one_liner": "Provably fair private poker on Starknet. Hole cards are encrypted STRK20 notes.",
-    "category": "Gaming",
-    "inspired_by": "RFP-03",
+    "name": "Quietline",
+    "one_liner": "Encrypted on-chain mail on Starknet. Payment memos ride the same private transfer.",
+    "category": "Other",
+    "inspired_by": "RFP-01",
     "team": ["gstohl"]
   }
 ]
