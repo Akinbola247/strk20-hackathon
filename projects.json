@@ -18,7 +18,7 @@
       "mainnet": false
     },
     "status": "building",
-    "pushed_at": "2026-08-14T08:46:41Z",
+    "pushed_at": "2026-08-14T09:14:10Z",
     "stars": 0,
     "builders": [
       {
@@ -31,12 +31,12 @@
     "active_days": [
       "2026-08-14"
     ],
-    "head_sha": "bde2a5bb2cf7f0d28d24931261d4114e66d34534",
-    "readme_hash": "3922:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
-    "churn_pct": 3.4,
-    "summary": "Encrypt and send messages on Starknet using private transactions.",
-    "description_long": "The project enables users to send encrypted messages on Starknet, ensuring that sender and recipient identities remain hidden. It uses a 'privacy_invoke' helper to handle encryption, and messages can optionally include payment memos within the same private transaction. The challenge tackled is ensuring that no server holds plaintext data, thereby enhancing the privacy of communication.",
-    "latest_push": "Added encrypted mail inbox UI and crypto primitives for Quietline.",
+    "head_sha": "3555be38e1d7bb36188a898d1dc28e5b291a22ba",
+    "readme_hash": "3971:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
+    "churn_pct": 11.5,
+    "summary": "Enable encrypted mail transactions on Starknet using private transfers.",
+    "description_long": "This project implements a private messaging system on Starknet, ensuring both message content and sender/recipient identities remain hidden. It allows users to send encrypted messages alongside private transfers, so remittance and notes can be bundled in a single transaction.",
+    "latest_push": "Hardened Quietline mail handling with several file modifications.",
     "tooling": [
       {
         "label": "get-starknet",
@@ -75,8 +75,8 @@
       }
     ],
     "has_readme": true,
-    "additions": 82,
-    "deletions": 30
+    "additions": 293,
+    "deletions": 106
   },
   {
     "slug": "erebus",
