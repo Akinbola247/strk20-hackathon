@@ -5,7 +5,7 @@
     "one_liner": "",
     "category": "Other",
     "repo_url": "https://github.com/PoulavBhowmick03/Erebus",
-    "demo_url": "",
+    "demo_url": "https://erebus-private-agents.vercel.app",
     "demo_video": "",
     "x_handle": "",
     "inspired_by": "",
@@ -13,33 +13,30 @@
     "transactions": [],
     "verified_txs": 0,
     "requirements": {
-      "demo": false,
+      "demo": true,
       "video": false,
       "mainnet": false
     },
     "status": "building",
-    "pushed_at": "2026-08-13T17:31:03Z",
+    "pushed_at": "2026-08-14T08:42:20Z",
     "stars": 2,
     "builders": [
       {
         "login": "PoulavBhowmick03",
         "name": "PoulavBhowmick03",
         "avatar_url": "https://avatars.githubusercontent.com/u/133862694?v=4"
-      },
-      {
-        "login": "ishitab02",
-        "name": "ishitab02",
-        "avatar_url": "https://avatars.githubusercontent.com/u/139248026?v=4"
       }
     ],
     "agents": [],
-    "active_days": [],
-    "head_sha": "f1f242345d729beac8b9806ea3725565f494db17",
-    "readme_hash": "8148:# Erebus\n\n**Target: negotiate in darkness, settle in silence.**\n\nErebus is experimental coordination and shielded-settlement infrastructure for AI agents.\n\nThe target is an **Eleusis**, an encrypted c",
-    "churn_pct": 1,
-    "summary": "Provide encrypted communication and settlements for AI agents.",
-    "description_long": "Erebus creates a shielded infrastructure for agent-to-agent commerce, addressing the critical need for privacy in transactions. It offers relationship privacy, atomic negotiation and settlement, and selective disclosure, ensuring that agents can operate without exposing their transactional relationships. The project implements an encrypted communication channel that moves away from transparent rails, solving challenges in agent interoperability with a focus on security and privacy.",
-    "latest_push": "Exposed balances through Python and limited offers to payable amounts.",
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "73280d7b4bc3ff28547ed440d5e89862255dd7cf",
+    "readme_hash": "9436:# Erebus\n\n**Negotiate in darkness, settle in silence.**\n\nErebus is experimental coordination and shielded-settlement infrastructure for AI agents.\n\n[Open the public demo](https://erebus-private-agents",
+    "churn_pct": 9.5,
+    "summary": "Provide infrastructure for autonomous AI agent negotiations and settlements.",
+    "description_long": "The project enables AI agents to negotiate and settle transactions securely through encrypted channels, ensuring that the negotiation process remains private. It aims to solve the issue of transparency in agent-to-agent commerce by providing atomic settlements and controlled disclosure of transaction details, preventing unauthorized observers from gleaning insights from metadata alone.",
+    "latest_push": "Added sprint demo and fixed license and documentation issues.",
     "tooling": [
       {
         "label": "Cairo",
@@ -53,8 +50,8 @@
       }
     ],
     "has_readme": true,
-    "additions": 168,
-    "deletions": 0
+    "additions": 1174,
+    "deletions": 389
   },
   {
     "slug": "client",
