@@ -79,6 +79,65 @@
     "churn_pct": 15.5
   },
   {
+    "slug": "stk402",
+    "name": "stk402",
+    "one_liner": "",
+    "category": "Other",
+    "repo_url": "https://github.com/Sarthib7/stk402",
+    "demo_url": "",
+    "demo_video": "",
+    "x_handle": "",
+    "inspired_by": "",
+    "contracts": [],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": false,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T09:28:43Z",
+    "stars": 0,
+    "builders": [
+      {
+        "login": "Sarthib7",
+        "name": "sarthib7",
+        "avatar_url": "https://avatars.githubusercontent.com/u/112841873?v=4"
+      }
+    ],
+    "agents": [],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "761f44b97fe6ba69d247e6751fb6b3f19e8addc5",
+    "readme_hash": "8086:# stk402\n\nPrivate STRK20 payments for x402 agents on Starknet.\n\nSTK402 adds an `exact-private` x402 payment scheme. An agent pays with a private STRK20 transfer. The server verifies the signed receipt",
+    "churn_pct": 0.4,
+    "summary": "Implement private STRK20 payments for x402 agents on Starknet.",
+    "description_long": "This project creates an `exact-private` payment scheme for x402 agents using private STRK20 transfers. It involves the verification of signed receipts and prevention of replay attacks while ensuring secure resource retrieval after payment. The system operates within a Devnet environment and includes planned future functions for Sepolia and Mainnet operations.",
+    "latest_push": "Added safe private balance funding and client for payments.",
+    "tooling": [
+      {
+        "label": "Privacy SDK",
+        "live": true,
+        "stack": true
+      },
+      {
+        "label": "starknet.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "TypeScript",
+        "live": false,
+        "stack": false
+      }
+    ],
+    "has_readme": true,
+    "additions": 21,
+    "deletions": 0
+  },
+  {
     "slug": "erebus",
     "name": "Erebus",
     "one_liner": "",
