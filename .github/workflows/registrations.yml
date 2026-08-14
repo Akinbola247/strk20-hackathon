@@ -58,6 +58,11 @@ jobs:
           EVENT: ${{ github.event_name }}
           PR: ${{ github.event.pull_request.number }}
         run: |
+          # The default shell is bash -e, and almost every command in this loop
+          # is allowed to fail: a branch that cannot be checked out, a commit
+          # with nothing in it, a merge that conflicts on purpose. One pull
+          # request going wrong must not take the rest of the run with it.
+          set +e
           set -uo pipefail
 
           # A merge into main invalidates every other open branch, so that case
@@ -100,16 +105,36 @@ jobs:
               echo "could not check out - skipped"; echo "::endgroup::"; continue
             fi
 
-            # The branch's own scripts are never trusted or run. Restoring to
-            # the worktree only, so they are not staged and never committed.
-            git restore --source=origin/main --worktree -- scripts .github 2>/dev/null || true
-            git restore --source=origin/main --worktree -- registry-removals.json 2>/dev/null || true
-
-            # What the contributor started from. Without it an entry they
-            # deliberately edited is indistinguishable from a stale copy.
+            # Read before anything touches the worktree. base is what the
+            # contributor started from - without it an entry they deliberately
+            # edited is indistinguishable from a stale copy - and head is the
+            # branch's own file, before main is merged into it.
             base_sha=$(git merge-base origin/main HEAD)
             git show "${base_sha}:registry.json" > "$RUNNER_TEMP/base.json" 2>/dev/null || echo "[]" > "$RUNNER_TEMP/base.json"
             cp registry.json "$RUNNER_TEMP/head.json"
+
+            # Merging comes before the scripts are restored: git refuses to
+            # merge into a dirty worktree, and restoring first is what made this
+            # fail on its second live run.
+            #
+            # Writing the right file is not enough on its own either. Git merges
+            # text, so a branch that appended its entry where main appended
+            # someone else's conflicts however correct the result is - GitHub
+            # reported four already-synced branches as CONFLICTING for exactly
+            # that reason. Making main an ancestor is what clears it.
+            behind=0
+            git merge-base --is-ancestor origin/main HEAD || behind=1
+            if [ "$behind" = "1" ]; then
+              git merge --no-commit --no-ff origin/main > /dev/null 2>&1
+              # Every file but registry.json belongs to main here - this branch
+              # was checked above not to touch any of them.
+              git checkout --theirs -- . > /dev/null 2>&1
+              git add -A > /dev/null 2>&1
+            fi
+
+            # The branch's own scripts are never trusted or run.
+            git restore --source=origin/main --worktree -- scripts .github > /dev/null 2>&1
+            git restore --source=origin/main --worktree -- registry-removals.json > /dev/null 2>&1
 
             if ! MAIN="$RUNNER_TEMP/main.json" BASE="$RUNNER_TEMP/base.json" HEAD="$RUNNER_TEMP/head.json" \
                  SUMMARY="$RUNNER_TEMP/summary.json" \
@@ -118,25 +143,15 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
-            # Writing the right file is not enough on its own. Git merges text,
-            # so a branch that appended its entry where main appended someone
-            # else's conflicts however correct the result is - GitHub reported
-            # four synced branches as CONFLICTING for exactly this reason. What
-            # clears it is making main an ancestor of the branch.
-            behind=0
-            git merge-base --is-ancestor origin/main HEAD || behind=1
-            if [ "$behind" = "1" ]; then
-              git merge --no-commit --no-ff origin/main > /dev/null 2>&1 || true
-              # Every file but registry.json belongs to main here - this branch
-              # was checked above not to touch any of them.
-              git checkout --theirs -- . > /dev/null 2>&1 || true
-            fi
+            cp "$RUNNER_TEMP/merged.json" registry.json
+            git add -A > /dev/null 2>&1
 
-            if [ "$behind" = "0" ] && cmp -s "$RUNNER_TEMP/merged.json" registry.json; then
+            # Nothing staged and no merge in progress means the branch already
+            # said what it should. Committing that would be an empty commit and
+            # a pointless push.
+            if git diff --cached --quiet && [ ! -f .git/MERGE_HEAD ]; then
               echo "already in sync with main"
             else
-              cp "$RUNNER_TEMP/merged.json" registry.json
-              git add -A
               git commit -q -m "chore: sync registry.json with main" \
                             -m "Rebuilt as main's registry plus this branch's entries, so the append-only conflict does not have to be resolved by hand."
               # A fork branch is only pushable when the author left "allow edits
