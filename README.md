@@ -27,9 +27,9 @@ You build in your own public repository. Your progress appears on the hub at [st
 
 1. Fork this repository and add one object to [`registry.json`](registry.json).
 2. Open a pull request saying what you're building.
-3. Once merged, you're in the builders group and your project appears on the hub.
+3. It merges on its own once the check passes, and your project appears on the hub within the half hour.
 
-Applications are reviewed by the STRK20 team and stay open for the whole sprint.
+Registration stays open for the whole sprint. Merging puts your project on the hub.
 
 This is the only pull request you open. Everything else - your pushes, your stack, your contracts, your demo - is read from your repository and refreshed every 30 minutes.
 
@@ -52,7 +52,7 @@ Two fields. Everything else is read from the repository itself.
 | Field | Required | Notes |
 |---|---|---|
 | `repo_url` | yes | your public GitHub repository |
-| `telegram` | yes | Telegram usernames, no `@`, one per person who needs group access |
+| `telegram` | yes | Telegram usernames, no `@`, one per person on the team - how the STRK20 team reaches you during the sprint |
 
 Optional, only if the derived value is wrong:
 
@@ -149,7 +149,7 @@ Winners announced **September 4**.
 - [STRK20 by example](https://strk20-by-example.org/what-is-strk20) - Documentation for the pool, the Privacy Wallet API, and anonymizer contracts.
 - [Build on STRK20](https://strk20.starknet.io/build) - Integration routes: private dapp, privacy wallet, or your own prover.
 
-The STRK20 team is in the Telegram group every day of the sprint.
+Stuck on something? Open an issue on this repository - the STRK20 team reads them every day of the sprint.
 
 ## After the sprint
 

@@ -2,7 +2,7 @@
 
 Thanks for building on the Starknet privacy pool. Everything here happens through pull requests.
 
-Opening a pull request is an application, not a registration: we review it, and merging it means we're adding you to the builders group.
+A valid pull request merges itself, usually within a minute, and your project is on the hub within the half hour.
 
 ## Applying
 
@@ -14,8 +14,12 @@ Opening a pull request is an application, not a registration: we review it, and 
      "telegram": ["your_telegram"]
    }
    ```
-3. Don't modify anyone else's entry. Append yours; leave the rest alone.
-4. Open the pull request. A check runs automatically and reports every problem at once.
+3. Don't modify anyone else's entry. Append yours; leave the rest alone - a pull request that changes an existing row stops and waits for a maintainer.
+4. Open the pull request. It validates and merges on its own. If something is wrong, the check reports every problem at once - fix it on the branch and it merges itself.
+
+**Ignore merge conflicts.** Everyone appends to the end of the same array, so your branch conflicts with every application merged after you opened it. Don't resolve it - a bot rewrites your branch as the current `registry.json` plus your entry, usually within a minute. Leave *Allow edits by maintainers* on and there is nothing for you to do.
+
+If you do resolve one by hand, keep **every** entry from both sides. Taking one side of the file deletes projects that were already accepted, and a check will block the merge until they're back.
 
 **Start building before it's merged.** Registration doesn't unlock anything - merging only decides when your project appears on the hub.
 
@@ -26,7 +30,7 @@ Opening a pull request is an application, not a registration: we review it, and 
 Two are required:
 
 - **`repo_url`** - a public GitHub repository. The hub reads your commits, README, and manifests from it.
-- **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person who needs access to the builders group. We use them to check whether you're already in the group, and to add you if your application holds up.
+- **`telegram`** - bare Telegram usernames, no `@` and no `t.me` links, one for each person on the team. This is how the STRK20 team reaches you during the sprint - about your entry, your submission, or a prize.
 
 The rest are optional, and only worth setting if the derived value is wrong:
 
@@ -104,4 +108,4 @@ Your README should still cover what it does and why it needed privacy, how to ru
 
 ## Reporting issues
 
-Open an issue for a broken check, a wrong entry, or anything unclear in these docs. For questions while building, the Telegram group is faster - the STRK20 team is in it every day of the sprint.
+Open an issue for a broken check, a wrong entry, anything unclear in these docs, or a question while building. The STRK20 team reads them every day of the sprint.
