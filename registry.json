@@ -2,5 +2,14 @@
   {
     "repo_url": "https://github.com/ZylithFi/client",
     "telegram": ["t4nz4n1t3"]
+  },
+  {
+    "repo_url": "https://github.com/gstohl/feltproof",
+    "telegram": ["stack_ref_error"],
+    "name": "Feltproof",
+    "one_liner": "Provably fair private poker on Starknet. Hole cards are encrypted STRK20 notes.",
+    "category": "Gaming",
+    "inspired_by": "RFP-03",
+    "team": ["gstohl"]
   }
 ]
