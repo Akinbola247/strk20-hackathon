@@ -112,7 +112,6 @@
     ],
     "head_sha": "761f44b97fe6ba69d247e6751fb6b3f19e8addc5",
     "readme_hash": "8086:# stk402\n\nPrivate STRK20 payments for x402 agents on Starknet.\n\nSTK402 adds an `exact-private` x402 payment scheme. An agent pays with a private STRK20 transfer. The server verifies the signed receipt",
-    "churn_pct": 0.4,
     "summary": "Implement private STRK20 payments for x402 agents on Starknet.",
     "description_long": "This project creates an `exact-private` payment scheme for x402 agents using private STRK20 transfers. It involves the verification of signed receipts and prevention of replay attacks while ensuring secure resource retrieval after payment. The system operates within a Devnet environment and includes planned future functions for Sepolia and Mainnet operations.",
     "latest_push": "Added safe private balance funding and client for payments.",
@@ -135,7 +134,8 @@
     ],
     "has_readme": true,
     "additions": 21,
-    "deletions": 0
+    "deletions": 0,
+    "churn_pct": 0.4
   },
   {
     "slug": "erebus",
