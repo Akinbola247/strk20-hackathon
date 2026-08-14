@@ -33,7 +33,6 @@
     ],
     "head_sha": "293f42fb8749994d715ec9de274b1cd96e9adfb3",
     "readme_hash": "4996:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
-    "churn_pct": 15.5,
     "summary": "Provide encrypted on-chain mail with private transfer options on Starknet.",
     "description_long": "The project implements a private-mail loop that allows users to send encrypted messages without revealing sender or recipient identities on the Starknet mainnet. It utilizes a 'privacy_invoke' helper to ensure that messages remain plaintext only on the recipient's device, and it can attach memos to private transfers, thereby keeping transaction details obscured from observers. Key challenges include maintaining the privacy of sender and recipient efficiently while ensuring reliable delivery through the blockchain infrastructure.",
     "latest_push": "Renamed the repository and added a real privacy pool devnet harness.",
@@ -76,7 +75,8 @@
     ],
     "has_readme": true,
     "additions": 580,
-    "deletions": 14
+    "deletions": 14,
+    "churn_pct": 15.5
   },
   {
     "slug": "erebus",
