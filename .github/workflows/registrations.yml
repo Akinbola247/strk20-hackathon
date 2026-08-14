@@ -90,6 +90,12 @@ jobs:
               echo "touches $touched - not a plain registration, skipped"; echo "::endgroup::"; continue
             fi
 
+            # The previous branch left the trusted scripts restored over its own,
+            # and git refuses to check out across those. Nothing here is worth
+            # keeping between branches - everything was pushed as it was made.
+            git reset --hard --quiet
+            git clean -qfd
+
             if ! gh pr checkout "$n" --force; then
               echo "could not check out - skipped"; echo "::endgroup::"; continue
             fi
@@ -167,7 +173,29 @@ jobs:
               echo "::endgroup::"; continue
             fi
 
+            # GitHub works out whether a branch merges cleanly in the background,
+            # and the answer is UNKNOWN for a second or two after a push. Asking
+            # to merge during that window is refused as a conflict, which is how
+            # the first live run left four synced branches sitting open.
+            mergeable=""
+            for _ in $(seq 1 20); do
+              mergeable=$(gh pr view "$n" --json mergeable --jq '.mergeable')
+              [ "$mergeable" = "UNKNOWN" ] || break
+              sleep 3
+            done
+
+            if [ "$mergeable" != "MERGEABLE" ]; then
+              gh pr comment "$n" --body "This is in sync with main and valid, but GitHub still reports it as \`${mergeable}\`. Leaving it - the next run will try again."
+              echo "mergeable=$mergeable - not merging this run"; echo "::endgroup::"; continue
+            fi
+
             gh pr merge "$n" --squash --delete-branch || \
               gh pr comment "$n" --body "Valid and in sync, but the merge did not go through. Merging by hand is safe now: the branch already contains every entry on main."
+
+            # Each merge moves main, so the next branch in this loop has to be
+            # rebuilt against the registry as it is now, not as it was at the
+            # start of the run.
+            git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+            git show origin/main:registry.json > "$RUNNER_TEMP/main.json"
             echo "::endgroup::"
           done
