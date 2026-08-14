@@ -1,6 +1,257 @@
 [
   {
-    "slug": "feltproof",
+    "slug": "neobank",
+    "name": "Private money account",
+    "one_liner": "Hold, send, and earn on STRK20 without publishing salary or net worth.",
+    "category": "Consumer",
+    "repo_url": "https://github.com/kamalbuilds/neobank",
+    "demo_url": "",
+    "demo_video": "",
+    "x_handle": "kamalbuilds",
+    "inspired_by": "IDEA-13",
+    "contracts": [],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": false,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T13:02:46Z",
+    "stars": 0,
+    "builders": [
+      {
+        "login": "kamalbuilds",
+        "name": "kamalbuilds",
+        "avatar_url": "https://avatars.githubusercontent.com/u/95926324?v=4"
+      }
+    ],
+    "agents": [],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "b01446c6e11f6c31205e280203f622bed1ad5823",
+    "readme_hash": "2446:# Private money account\n\nHold and send on the live STRK20 pool without publishing salary or net worth. Yield is planned, not in this repo.\n\nThis is a non-custodial Starknet app. It is not a licensed b",
+    "churn_pct": 1.4,
+    "summary": "Enable private transactions on the STRK20 pool without revealing sensitive financial details.",
+    "description_long": "This dapp facilitates holding and sending STRK20 assets while keeping user financial information shielded. It utilizes a non-custodial architecture where the app never holds viewing keys, solving the challenge of maintaining user privacy in transactions. The implementation involves wallet integration, requiring users to approve transactions through a series of prompts to manage asset shielding and private transfers.",
+    "latest_push": "Fixed authorization issues and added AVNU private swap with server-side paymaster.",
+    "tooling": [
+      {
+        "label": "AVNU",
+        "live": true,
+        "stack": true
+      },
+      {
+        "label": "get-starknet",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "Next.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "React",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "starknet.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "TypeScript",
+        "live": false,
+        "stack": false
+      }
+    ],
+    "has_readme": true,
+    "additions": 25,
+    "deletions": 9
+  },
+  {
+    "slug": "veilcast",
+    "name": "Veilcast",
+    "one_liner": "Private prediction markets on Starknet: visible odds, invisible bettors.",
+    "category": "DeFi",
+    "repo_url": "https://github.com/zkasuran/veilcast",
+    "demo_url": "",
+    "demo_video": "",
+    "x_handle": "",
+    "inspired_by": "RFP-07",
+    "contracts": [],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": false,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T12:08:25Z",
+    "stars": 0,
+    "builders": [
+      {
+        "login": "zkasuran",
+        "name": "zkasuran",
+        "avatar_url": "https://avatars.githubusercontent.com/u/289388318?v=4"
+      }
+    ],
+    "agents": [],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "8ec537c2d667fa7086083ea453940ec5c6060cff",
+    "readme_hash": "5826:# Veilcast\n\nPrivate prediction markets on Starknet. Visible odds, invisible bettors.\n\n> Built for the STRK20 Private Sprint. Runs against the live STRK20 privacy pool on Starknet.\n\n## What it is\n\nVeil",
+    "churn_pct": 0.4,
+    "summary": "Create anonymous prediction markets on Starknet with visible odds.",
+    "description_long": "Veilcast allows users to place bets on prediction markets while keeping their identities anonymous. It leverages the STRK20 privacy pool to ensure bet amounts are public for accurate pricing, but anonymizes the bettor's identity and links between bets to prevent tracking and manipulation. The use of Cairo contracts and integrated oracles ensures transparent market operations while maintaining privacy.",
+    "latest_push": "Added private prediction market scaffold and design using STRK20 starter kit.",
+    "tooling": [
+      {
+        "label": "get-starknet",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "Next.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "React",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "starknet.js",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "TypeScript",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "Cairo",
+        "live": false,
+        "stack": false
+      }
+    ],
+    "has_readme": true,
+    "additions": 3,
+    "deletions": 3
+  },
+  {
+    "slug": "cutout",
+    "name": "Cutout",
+    "one_liner": "A privacy-liquidity router for STRK20. Before you sign, it checks whether your amount has meaningful public cover and routes flexible transactions toward healthier exact-amount cohorts.",
+    "category": "Infra",
+    "repo_url": "https://github.com/dmetagame/cutout",
+    "demo_url": "",
+    "demo_video": "",
+    "x_handle": "",
+    "inspired_by": "",
+    "contracts": [],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": false,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T11:30:04Z",
+    "stars": 0,
+    "builders": [
+      {
+        "login": "dmetagame",
+        "name": "dmetagame",
+        "avatar_url": "https://avatars.githubusercontent.com/u/118340345?v=4"
+      }
+    ],
+    "agents": [],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "4e3a5df2c2c0d89165d747463fb2b00b9024b389",
+    "readme_hash": "5058:# Cutout\n\n**A privacy-liquidity router for STRK20.**\n\nBefore you sign, Cutout works out whether your amount has meaningful public cover\nright now, and routes flexible transactions toward healthier exa",
+    "churn_pct": 0.8,
+    "summary": "Offer insights on transaction privacy for STRK20 users.",
+    "description_long": "The tool analyzes proposed transactions in real-time to determine their privacy risks, focusing on the relationship between deposit amounts and timing. By evaluating historical data, it provides users with recommended transaction amounts that minimize the chance of linkage to past deposits, addressing the challenge of operational transparency in cryptographic financial systems.",
+    "latest_push": "Documented sprint registration in the status.",
+    "tooling": [],
+    "has_readme": true,
+    "additions": 1,
+    "deletions": 1
+  },
+  {
+    "slug": "envelope",
+    "name": "envelope",
+    "one_liner": "Private money you can send as a link. A STRK20 anonymizer that pays people who have never touched Starknet, with claim authorisations that cannot be front-run.",
+    "category": "Payments",
+    "repo_url": "https://github.com/0xrlawrence/envelope",
+    "demo_url": "https://0xrlawrence.github.io/envelope/",
+    "demo_video": "",
+    "x_handle": "",
+    "inspired_by": "IDEA-09",
+    "contracts": [
+      {
+        "address": "0x04ff4f083a4667930efe14963645f9bda00bb10d44e4c13a9ee808e66c076211",
+        "network": "sepolia"
+      }
+    ],
+    "transactions": [],
+    "verified_txs": 0,
+    "requirements": {
+      "demo": true,
+      "video": false,
+      "mainnet": false
+    },
+    "status": "building",
+    "pushed_at": "2026-08-14T11:08:24Z",
+    "stars": 0,
+    "builders": [],
+    "agents": [
+      {
+        "family": "Claude",
+        "name": "Claude",
+        "avatar_url": "https://avatars.githubusercontent.com/u/81847?v=4",
+        "commits": 48
+      }
+    ],
+    "active_days": [
+      "2026-08-14"
+    ],
+    "head_sha": "e08de5174c36e68496b48cd0e03b5a0d988f9cb6",
+    "readme_hash": "6582:# Envelope\n\n**Private money you can send as a link, to someone who has never heard of Starknet.**\n\nEnvelope is a [STRK20](https://strk20.starknet.io) anonymizer contract and app.\nYou shield tokens, se",
+    "churn_pct": 3,
+    "summary": "Send private money as a link to anyone without requiring prior registration.",
+    "description_long": "The project implements a STRK20 anonymizer contract that allows users to shield tokens, seal them in an envelope, and send a link to the recipient. This approach solves the problem of private transfers on Starknet where the recipient does not need to be a registered user, thus allowing seamless payments to anyone while protecting the identity of the sender through the use of secure cryptographic signatures.",
+    "latest_push": "Implemented various enhancements to the claim and envelope handling logic.",
+    "tooling": [
+      {
+        "label": "Cairo",
+        "live": false,
+        "stack": false
+      },
+      {
+        "label": "Starknet Foundry",
+        "live": false,
+        "stack": false
+      }
+    ],
+    "has_readme": true,
+    "additions": 109,
+    "deletions": 47
+  },
+  {
+    "slug": "quietline",
     "name": "Quietline",
     "one_liner": "Encrypted on-chain mail on Starknet. Payment memos ride the same private transfer.",
     "category": "Other",
@@ -33,9 +284,10 @@
     ],
     "head_sha": "293f42fb8749994d715ec9de274b1cd96e9adfb3",
     "readme_hash": "4996:# Quietline\n\nEncrypted on-chain mail on Starknet.\n\nAddresses never appear on the message. Content decrypts only on the\nrecipient's device. A private transfer can carry a memo in the same\ntransaction —",
-    "summary": "Provide encrypted on-chain mail with private transfer options on Starknet.",
-    "description_long": "The project implements a private-mail loop that allows users to send encrypted messages without revealing sender or recipient identities on the Starknet mainnet. It utilizes a 'privacy_invoke' helper to ensure that messages remain plaintext only on the recipient's device, and it can attach memos to private transfers, thereby keeping transaction details obscured from observers. Key challenges include maintaining the privacy of sender and recipient efficiently while ensuring reliable delivery through the blockchain infrastructure.",
-    "latest_push": "Renamed the repository and added a real privacy pool devnet harness.",
+    "churn_pct": 15.2,
+    "summary": "Send encrypted messages on Starknet with integrated payment memos.",
+    "description_long": "This project allows users to send encrypted messages on Starknet without revealing sender or recipient identities. It uses a `privacy_invoke` helper to encrypt content, ensuring that only the intended recipient can decrypt messages on their device. The implementation includes attaching payment memos within the same transaction, maintaining privacy while allowing note annotations in public transfers.",
+    "latest_push": "Added real privacy pool devnet harness and updated mail handling.",
     "tooling": [
       {
         "label": "get-starknet",
@@ -74,9 +326,8 @@
       }
     ],
     "has_readme": true,
-    "additions": 580,
-    "deletions": 14,
-    "churn_pct": 15.5
+    "additions": 575,
+    "deletions": 9
   },
   {
     "slug": "stk402",
