@@ -100,10 +100,12 @@ const SPRINT_START = "2026-08-14T00:00:00Z";
  * a list someone remembered to keep current. A teammate who joins in week two
  * shows up the moment they push.
  *
- * Scoped to the sprint window: /contributors would return a repository's whole
- * history, so an existing project would credit forty people who never entered.
- * Before the sprint opens there is no window yet, so it falls back to recent
- * commits and the entry can still show a face on day one.
+ * Two lists, for two different questions. The sprint window says who is active
+ * now, and the activity strip and the ordering come from it. Everyone who has
+ * ever committed says who the team is, and that is what gets named - scoping
+ * the credits to the window meant a teammate whose work predates day one was
+ * missing from their own project, which is how most repositories look on the
+ * morning the sprint opens.
  *
  * Avatars and names come straight off the commit payload, so this costs one
  * request per project rather than one per person. */
@@ -216,9 +218,34 @@ async function detectBuilders(owner, repo, entry) {
     collect(await gh(`/repos/${owner}/${repo}/commits?per_page=30`));
   }
 
-  /* Most commits first, so the row's three visible faces are the people
-     carrying the project. */
-  const detected = [...seen.values()].sort((a, b) => (counts.get(b.login) || 0) - (counts.get(a.login) || 0));
+  /* The window above decides who is *active*, and it has to, or the activity
+   * strip would count work done before anyone entered. It is the wrong list to
+   * credit a team by: most projects start before the sprint opens, so a
+   * teammate whose commits predate day one disappeared from their own project.
+   * Erebus showed one builder against a repository with two contributors.
+   *
+   * So everyone who has ever committed is named, ordered by what they have
+   * done during the sprint. One request, and it carries the avatar. */
+  const lifetime = new Map();
+  for (const c of (await gh(`/repos/${owner}/${repo}/contributors?per_page=100`)) || []) {
+    if (!c?.login) continue;
+    if (c.type === "Bot" || /\[bot\]$/i.test(c.login)) continue;
+    const family = agentFamily(c.login);
+    if (family) {
+      noteAgent(null, family, c.avatar_url);
+      continue;
+    }
+    lifetime.set(c.login, c.contributions || 0);
+    if (!seen.has(c.login)) {
+      seen.set(c.login, { login: c.login, name: c.login, avatar_url: c.avatar_url });
+    }
+  }
+
+  /* Most commits this sprint first, so the row's visible faces are the people
+     carrying the project now, with everyone else behind them by weight. */
+  const detected = [...seen.values()].sort((a, b) =>
+    (counts.get(b.login) || 0) - (counts.get(a.login) || 0) ||
+    (lifetime.get(b.login) || 0) - (lifetime.get(a.login) || 0));
 
   /* Anyone the team listed by hand and detection missed: a different commit
      email, a co-author, someone who hasn't pushed yet. */
@@ -226,6 +253,16 @@ async function detectBuilders(owner, repo, entry) {
   for (const login of declared) {
     if (typeof login !== "string" || seen.has(login)) continue;
     detected.push(await resolveUser(login));
+  }
+
+  /* A project whose every commit is signed by an agent has no human in its
+     history at all - envelope is written entirely by the claude account. The
+     person who owns the repository entered it and is answerable for it, so
+     they are the builder until someone else pushes. Organisations are skipped:
+     an org is not a person to credit. */
+  if (!detected.length) {
+    const account = await gh(`/users/${encodeURIComponent(owner)}`);
+    if (account?.type === "User" && !agentFamily(owner)) detected.push(await resolveUser(owner));
   }
 
   return {
